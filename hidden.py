@@ -157,10 +157,10 @@ if __name__ == "__main__":
         if saved_model in disc_folders: # already trained
             input_file = input_folder + saved_model
             print("input disc", input_file)
-            if HIDDEN:
-                kw = "hidden_"
-            else:
-                kw = "prob_"
+            #if HIDDEN:
+            kw = "hidden_"
+            #else:
+            #    kw = "prob_"
             #output_file = output_folder + kw + saved_model + "_" + pop
             #print("output file", output_file)
             #if not os.path.isfile(output_file + ".txt"):
