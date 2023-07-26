@@ -9,6 +9,7 @@ Date: 7/26/23
 import math
 import numpy as np
 import os
+import scipy.special
 import sys
 import tensorflow as tf
 
@@ -61,7 +62,7 @@ def compute_pi(hap_matrix):
     num_ones = np.sum(hap_matrix, axis=0)
     num_zeros = num_haps - num_ones
     print(num_ones, num_zeros)
-    per_snp_pi = [num_ones[i]*num_zeros[i] / math.comb(num_haps,num_ones[i]) for i in range(num_snps)]
+    per_snp_pi = [num_ones[i]*num_zeros[i] / scipy.special.comb(num_haps,num_ones[i]) for i in range(num_snps)]
    
     # return average pi
     return np.mean(per_snp_pi)
