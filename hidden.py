@@ -1,8 +1,8 @@
 """
-Computes the values of the last hidden layer (or the predictions) of the
-discriminator for regions of real data along the genome.
-Authors: Rebecca Riley, Sara Mathieson
-Date: 12/14/22
+Computes the values of hidden units of the discriminator for regions of real
+data along the genome.
+Authors: Sara Mathieson
+Date: 7/26/23
 """
 
 # python imports
@@ -17,10 +17,15 @@ import discriminator
 import global_vars
 import real_data_random
 
-# globals
-#NUM_REGIONS = 1000
+################################################################################
+# GLOBALS
+################################################################################
+
 NUM_SNPS = global_vars.NUM_SNPS
-HIDDEN = True # if True, compute last hidden layer, o.w. compute probability
+
+################################################################################
+# HELPERS
+################################################################################
 
 def get_iterator(input_file, bed_file):
     iterator = real_data_random.RealDataRandomIterator(input_file, 
@@ -34,8 +39,13 @@ def get_prob(x):
 def get_pop(h5_filename):
     return h5_filename.split("/")[-1].split(".")[0]
 
+# write a function that takes a vector and returns the indicies of non-zero values
+def get_nonzero_indices(after_perm):
+    for row in after_perm:
+        print(np.nonzero(row))
+
 ################################################################################
-# LAST HIDDEN LAYER
+# UNPACKING THE DISCRIMINATOR
 ################################################################################
 
 def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=None):
@@ -80,28 +90,12 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
                 dtype=np.float32)
             corrected[0] = region
 
-            if HIDDEN:
-                #hidden_values = disc_recon.last_hidden_layer(corrected)
-                after_perm = disc_recon.after_perm(corrected)
-                all_regions.append(after_perm.numpy()[0])
-                print(after_perm)
-                input('enter: got through after perm')
-
-            else:
-                #pred = disc(corrected, training=False).numpy()
-                pred_recon = disc_recon(corrected, training=False).numpy()
-                #prob = get_prob(pred)
-                all_logits.append(pred_recon)
-                #print("logit", pred_recon)
-                #input('enter')
-                prob_recon = get_prob(pred_recon)
-
-                start_base = iterator.pos_all[start_idx]
-                end_idx = start_idx + global_vars.NUM_SNPS
-                end_base = iterator.pos_all[end_idx]
-                all_regions.append([int(curr_chrom),start_base,end_base,prob_recon])
-                #print(curr_chrom,start_base,end_base,prob_recon)
-                #input('enter')
+            #hidden_values = disc_recon.last_hidden_layer(corrected)
+            after_perm = disc_recon.after_perm(corrected)
+            get_nonzero_indices(after_perm.numpy()[0])
+            #all_regions.append(after_perm.numpy()[0])
+            print(after_perm)
+            input('enter: got through after perm')
 
         num_total += 1
 
