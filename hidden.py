@@ -16,6 +16,7 @@ import tensorflow as tf
 import discriminator
 import global_vars
 import real_data_random
+import ss_helpers
 
 ################################################################################
 # GLOBALS
@@ -41,8 +42,14 @@ def get_pop(h5_filename):
 
 # write a function that takes a vector and returns the indicies of non-zero values
 def get_nonzero_indices(after_perm):
+    num_nonz = 0
+    nonz_return = None
     for row in after_perm:
-        print(np.nonzero(row))
+        nonzero_indices = np.nonzero(row)
+        num_nonz = max(num_nonz, len(nonzero_indices[0]))
+        if len(nonzero_indices[0]) == num_nonz:
+            nonz_return = nonzero_indices
+    return nonz_return
 
 ################################################################################
 # UNPACKING THE DISCRIMINATOR
@@ -92,9 +99,17 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
 
             #hidden_values = disc_recon.last_hidden_layer(corrected)
             after_perm = disc_recon.after_perm(corrected)
-            get_nonzero_indices(after_perm.numpy()[0])
+            nonz_inds = get_nonzero_indices(after_perm.numpy()[0])
             #all_regions.append(after_perm.numpy()[0])
+            print(nonz_inds)
             print(after_perm)
+
+            # look at stats too
+            # look at pi in blocks of 6:
+            for i in range(0,NUM_SNPS,6):
+                stats = ss_helpers.stats_all(corrected[:,:,i:i+6,:])
+                print("pi", stats[-2])
+            #all_stats.append(stats[0])
             input('enter: got through after perm')
 
         num_total += 1
