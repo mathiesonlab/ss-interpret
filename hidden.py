@@ -159,7 +159,7 @@ if __name__ == "__main__":
                     disc_along_genome(iterator, input_file, output_file)'''
 
         # fine tuning
-        saved_model = disc_folders[0][:3] + "_" + str(i) + "_" + date + "_finetune"
+        saved_model = disc_folders[0][:3] + "_" + str(i) + "_" + date# + "_finetune"
         if saved_model in disc_folders: # already trained
             input_file = input_folder + saved_model
             print("input disc", input_file)
