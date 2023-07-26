@@ -16,7 +16,7 @@ import tensorflow as tf
 import discriminator
 import global_vars
 import real_data_random
-import ss_helpers
+#import ss_helpers
 
 ################################################################################
 # GLOBALS
@@ -51,6 +51,21 @@ def get_nonzero_indices(after_perm):
             nonz_return = nonzero_indices
     return nonz_return
 
+def compute_pi(hap_matrix):
+    """hap_matrix should be 2D, (num_haps, num_snps)"""
+    print('pi', hap_matrix)
+    num_haps = hap_matrix.shape[0]
+    num_snps = hap_matrix.shape[1]
+    
+    # compute pi for each SNP
+    num_ones = np.sum(hap_matrix, axis=0)
+    num_zeros = num_haps - num_ones
+    print(num_ones, num_zeros)
+    per_snp_pi = [num_ones[i]*num_zeros[i] / math.comb(num_haps,num_ones[i]) for i in range(num_snps)]
+   
+    # return average pi
+    return np.mean(per_snp_pi)
+
 ################################################################################
 # UNPACKING THE DISCRIMINATOR
 ################################################################################
@@ -66,7 +81,7 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
             saved_model=disc)
 
     # options for discriminator (neg1 should be False for summary stats)
-    neg1 = True
+    #neg1 = True
     region_len = False
     prev_chrom = None
 
@@ -88,14 +103,16 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
         #print("OVERRIDING START IDX!!!!")
         #start_idx = 7651637
         #curr_chrom = iterator.chrom_all[start_idx]
-        region = iterator.real_region(neg1, region_len, start_idx=start_idx)
+        # neg1 is True for discriminator and False for summary stats
+        region_disc = iterator.real_region(True, region_len, start_idx=start_idx)
+        region_stat = iterator.real_region(False, region_len, start_idx=start_idx)
         #print(region)
 
         # compute hidden layer or probability
-        if region is not None:
+        if region_disc is not None:
             corrected = np.zeros((1, iterator.num_samples, NUM_SNPS, 2),
                 dtype=np.float32)
-            corrected[0] = region
+            corrected[0] = region_disc
 
             #hidden_values = disc_recon.last_hidden_layer(corrected)
             after_perm = disc_recon.after_perm(corrected)
@@ -106,9 +123,10 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
 
             # look at stats too
             # look at pi in blocks of 6:
+            corrected[0] = region_stat
             for i in range(0,NUM_SNPS,6):
-                stats = ss_helpers.stats_all(corrected[:,:,i:i+6,:])
-                print("pi", stats[-2])
+                pi = compute_pi(corrected[0,:,i:i+6,0]) # don't need inter-SNP 
+                print("pi", pi)
             #all_stats.append(stats[0])
             input('enter: got through after perm')
 
@@ -129,7 +147,13 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
 # MAIN
 ################################################################################
 
+def test_pi():
+    hap_matrix = np.array([[0,1,1,0],[1,0,1,0],[0,0,1,1],[1,1,0,0],[0,1,1,0],[0,0,1,0],[0,0,1,1],[1,1,0,0]])
+    print(compute_pi(hap_matrix))
+
 if __name__ == "__main__":
+    #test_pi()
+    #sys.exit()
 
     h5_filename = sys.argv[1]   # h5 file (i.e. real genomic regions)
     bed_filename = sys.argv[2]  # accessibility mask
