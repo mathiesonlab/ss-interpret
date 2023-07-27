@@ -117,8 +117,8 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
             corrected[0] = region_disc
 
             #hidden_values = disc_recon.last_hidden_layer(corrected)
-            after_perm = disc_recon.after_perm(corrected)
-            nonz_inds = get_nonzero_indices(after_perm.numpy()[0])
+            after_perm = disc_recon.after_perm(corrected).numpy()[0]
+            nonz_inds = get_nonzero_indices(after_perm)
             #all_regions.append(after_perm.numpy()[0])
             print(nonz_inds)
             for index in nonz_inds[0]:
