@@ -88,7 +88,9 @@ def disc_along_genome(iterator, input_folder, output_file, fine_tune_disc=None):
 
     # setup output array
     all_regions = []
-    all_logits = []
+    #all_logits = []
+
+    out_file = open(output_file + ".txt", 'w')
 
     # go through entire genome
     final_end = iterator.num_snps-NUM_SNPS
@@ -122,7 +124,7 @@ def disc_along_genome(iterator, input_folder, output_file, fine_tune_disc=None):
             #all_regions.append(after_perm.numpy()[0])
             #print(nonz_inds)
             for index in nonz_inds:
-                print(str(index) + ":" + ",".join([str(h) for h in after_perm[:,index]]))
+                out_file.write(str(index) + ":" + ",".join([str(h) for h in after_perm[:,index]]) + "\n")
 
             # look at stats too
             # look at pi in blocks of 6:
@@ -132,12 +134,13 @@ def disc_along_genome(iterator, input_folder, output_file, fine_tune_disc=None):
                 pi = compute_pi(corrected[0,:,i:i+6,0]) # don't need inter-SNP 
                 pi_vector.append(pi)
             #all_stats.append(stats[0])
-            print("pi:" + ",".join([str(p) for p in pi_vector]))
+            out_file.write("pi:" + ",".join([str(p) for p in pi_vector]) + "\n")
             #input('enter: got through after perm')
 
         num_total += 1
 
     print("num good regions", len(all_regions), "/", num_total) #NUM_REGIONS)
+    out_file.close()
     '''if HIDDEN:
         np.save(output_file + ".npy", np.array(all_regions))
     elif fine_tune_disc is None:
@@ -202,7 +205,7 @@ if __name__ == "__main__":
             input_file = input_folder + saved_model
             print("input disc", input_file)
             #if HIDDEN:
-            kw = "hidden_"
+            kw = "hidden_pi_"
             #else:
             #    kw = "prob_"
             output_file = output_folder + kw + saved_model + "_" + pop
