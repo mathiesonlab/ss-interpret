@@ -71,7 +71,7 @@ def compute_pi(hap_matrix):
 # UNPACKING THE DISCRIMINATOR
 ################################################################################
 
-def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=None):
+def disc_along_genome(iterator, input_folder, output_file, fine_tune_disc=None):
 
     if fine_tune_disc is None:
         disc = tf.saved_model.load(input_folder)
@@ -120,17 +120,19 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
             after_perm = disc_recon.after_perm(corrected).numpy()[0]
             nonz_inds = get_nonzero_indices(after_perm)[0]
             #all_regions.append(after_perm.numpy()[0])
-            print(nonz_inds)
+            #print(nonz_inds)
             for index in nonz_inds:
-                print(after_perm[:,index])
+                print(index + ":" + ",".join(after_perm[:,index]))
 
             # look at stats too
             # look at pi in blocks of 6:
             corrected[0] = region_stat
+            pi_vector = []
             for i in range(0,NUM_SNPS,6):
                 pi = compute_pi(corrected[0,:,i:i+6,0]) # don't need inter-SNP 
-                print("pi", pi)
+                pi_vector.append(pi)
             #all_stats.append(stats[0])
+            print("pi", ",".join(pi_vector))
             input('enter: got through after perm')
 
         num_total += 1
@@ -161,8 +163,8 @@ if __name__ == "__main__":
     h5_filename = sys.argv[1]   # h5 file (i.e. real genomic regions)
     bed_filename = sys.argv[2]  # accessibility mask
     input_folder = sys.argv[3]  # folder of discriminator folders
-    #output_folder = sys.argv[4] # folder for npy files of hidden values
-    date = sys.argv[4]
+    output_folder = sys.argv[4] # folder for npy files of hidden values
+    date = sys.argv[5]
 
     pop = get_pop(h5_filename)
     disc_folders = sorted(os.listdir(input_folder))
@@ -177,7 +179,7 @@ if __name__ == "__main__":
     #    "sammet0_exp_CEU"]
     #disc_folders = ["brooks9_exp_YRI", "hall7_exp_YRI", "sammet5_exp_YRI", "goto6_exp_YRI", "hawes8_exp_YRI"]
     #for saved_model in disc_folders:
-    for i in range(19,20):#20):
+    for i in range(20):
         #print(disc_folders)
         '''if not HIDDEN: # only do hidden for fine-tune
             saved_model = disc_folders[0][:3] + "_" + str(i) + "_" + date
@@ -203,8 +205,8 @@ if __name__ == "__main__":
             kw = "hidden_"
             #else:
             #    kw = "prob_"
-            #output_file = output_folder + kw + saved_model + "_" + pop
+            output_file = output_folder + kw + saved_model + "_" + pop
             #print("output file", output_file)
             #if not os.path.isfile(output_file + ".txt"):
                 #print("would run predictions")
-            disc_along_genome(iterator, input_file)#, output_file)
+            disc_along_genome(iterator, input_file, output_file)
