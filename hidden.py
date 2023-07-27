@@ -122,7 +122,7 @@ def disc_along_genome(iterator, input_folder, output_file, fine_tune_disc=None):
             #all_regions.append(after_perm.numpy()[0])
             #print(nonz_inds)
             for index in nonz_inds:
-                print(index + ":" + ",".join(after_perm[:,index]))
+                print(str(index) + ":" + ",".join([str(h) for h in after_perm[:,index]]))
 
             # look at stats too
             # look at pi in blocks of 6:
@@ -132,7 +132,7 @@ def disc_along_genome(iterator, input_folder, output_file, fine_tune_disc=None):
                 pi = compute_pi(corrected[0,:,i:i+6,0]) # don't need inter-SNP 
                 pi_vector.append(pi)
             #all_stats.append(stats[0])
-            print("pi", ",".join(pi_vector))
+            print("pi", ",".join([str(p) for p in pi_vector]))
             input('enter: got through after perm')
 
         num_total += 1
