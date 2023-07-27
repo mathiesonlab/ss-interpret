@@ -58,9 +58,6 @@ class OnePopModel(Model):
         # can try max or sum as the permutation-invariant function
         #x = tf.math.reduce_max(x, axis=1)
         x = tf.math.reduce_sum(x, axis=1)
-
-        print(x.shape)
-        input('enter')
         return x
 
     def last_hidden_layer(self, x):
