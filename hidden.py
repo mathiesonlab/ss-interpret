@@ -132,8 +132,8 @@ def disc_along_genome(iterator, input_folder, output_file, fine_tune_disc=None):
                 pi = compute_pi(corrected[0,:,i:i+6,0]) # don't need inter-SNP 
                 pi_vector.append(pi)
             #all_stats.append(stats[0])
-            print("pi", ",".join([str(p) for p in pi_vector]))
-            input('enter: got through after perm')
+            print("pi:" + ",".join([str(p) for p in pi_vector]))
+            #input('enter: got through after perm')
 
         num_total += 1
 
@@ -206,7 +206,7 @@ if __name__ == "__main__":
             #else:
             #    kw = "prob_"
             output_file = output_folder + kw + saved_model + "_" + pop
-            #print("output file", output_file)
+            print("output file", output_file)
             #if not os.path.isfile(output_file + ".txt"):
                 #print("would run predictions")
             disc_along_genome(iterator, input_file, output_file)
