@@ -121,7 +121,7 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
             nonz_inds = get_nonzero_indices(after_perm.numpy()[0])
             #all_regions.append(after_perm.numpy()[0])
             print(nonz_inds)
-            print(after_perm[nonz_inds])
+            print(after_perm[nonz_inds[0]])
 
             # look at stats too
             # look at pi in blocks of 6:
