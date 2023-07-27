@@ -118,10 +118,10 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
 
             #hidden_values = disc_recon.last_hidden_layer(corrected)
             after_perm = disc_recon.after_perm(corrected).numpy()[0]
-            nonz_inds = get_nonzero_indices(after_perm)
+            nonz_inds = get_nonzero_indices(after_perm)[0]
             #all_regions.append(after_perm.numpy()[0])
             print(nonz_inds)
-            for index in nonz_inds[0]:
+            for index in nonz_inds:
                 print(after_perm[:,index])
 
             # look at stats too
@@ -195,7 +195,7 @@ if __name__ == "__main__":
                     disc_along_genome(iterator, input_file, output_file)'''
 
         # fine tuning
-        saved_model = disc_folders[0][:3] + "_" + str(i) + "_" + date# + "_finetune"
+        saved_model = disc_folders[0][:3] + "_" + str(i) + "_" + date + "_finetune"
         if saved_model in disc_folders: # already trained
             input_file = input_folder + saved_model
             print("input disc", input_file)
