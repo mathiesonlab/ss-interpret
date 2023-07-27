@@ -177,7 +177,7 @@ if __name__ == "__main__":
     #    "sammet0_exp_CEU"]
     #disc_folders = ["brooks9_exp_YRI", "hall7_exp_YRI", "sammet5_exp_YRI", "goto6_exp_YRI", "hawes8_exp_YRI"]
     #for saved_model in disc_folders:
-    for i in range(1,2):#20):
+    for i in range(0,1):#20):
         #print(disc_folders)
         '''if not HIDDEN: # only do hidden for fine-tune
             saved_model = disc_folders[0][:3] + "_" + str(i) + "_" + date
