@@ -107,7 +107,8 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
         # neg1 is True for discriminator and False for summary stats
         region_disc = iterator.real_region(True, region_len, start_idx=start_idx)
         region_stat = iterator.real_region(False, region_len, start_idx=start_idx)
-        #print(region)
+        print(region_disc, region_stat)
+        input("enter printed regions")
 
         # compute hidden layer or probability
         if region_disc is not None:
