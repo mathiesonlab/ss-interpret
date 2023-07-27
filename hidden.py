@@ -54,14 +54,14 @@ def get_nonzero_indices(after_perm):
 
 def compute_pi(hap_matrix):
     """hap_matrix should be 2D, (num_haps, num_snps)"""
-    print('pi', hap_matrix)
+    #print('pi', hap_matrix)
     num_haps = hap_matrix.shape[0]
     num_snps = hap_matrix.shape[1]
     
     # compute pi for each SNP
     num_ones = np.sum(hap_matrix, axis=0)
     num_zeros = num_haps - num_ones
-    print(num_ones, num_zeros)
+    #print(num_ones, num_zeros)
     per_snp_pi = [num_ones[i]*num_zeros[i] / scipy.special.comb(num_haps,num_ones[i]) for i in range(num_snps)]
    
     # return average pi
@@ -107,8 +107,8 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
         # neg1 is True for discriminator and False for summary stats
         region_stat = iterator.real_region(False, region_len, start_idx=start_idx)
         region_disc = iterator.real_region(True, region_len, start_idx=start_idx)
-        print(region_disc, region_stat)
-        input("enter printed regions")
+        #print(region_disc, region_stat)
+        #input("enter printed regions")
 
         # compute hidden layer or probability
         if region_disc is not None:
@@ -121,7 +121,7 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
             nonz_inds = get_nonzero_indices(after_perm.numpy()[0])
             #all_regions.append(after_perm.numpy()[0])
             print(nonz_inds)
-            print(after_perm)
+            #print(after_perm)
 
             # look at stats too
             # look at pi in blocks of 6:
