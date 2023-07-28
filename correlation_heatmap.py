@@ -5,10 +5,12 @@ Date: 7/28/23
 """
 
 # python imports
+from collections import defaultdict
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import math
 import numpy as np
+import operator
 import seaborn as sns
 from sklearn.cluster import AgglomerativeClustering
 import sys
@@ -30,8 +32,24 @@ COLOR_MAP = {'YRI': 'PuOr', 'CEU': 'RdBu', 'CHB': 'PiYG', 'ESN': 'PuOr',
 
 class RegionData():
     """ class to store data for a region """
-    def __init__(self, lines):
+    def __init__(self, lines, common_indices):
         self.pi_vec = [float(x) for x in lines[-1].split(":")[1].split(",")]
+
+        line_dict = {}
+        for line in lines[:-1]:
+            line_split = line.split(":")
+            i = int(line_split[0])
+            line_dict[i] = [float(x) for x in line_split[1].split(",")]
+        
+        self.hidden_data = {}
+        for index in common_indices:
+            if index not in line_dict:
+                self.hidden_data[index] = [0.0 for _ in range(len(self.pi_vec))]
+            else:
+                self.hidden_data[index] = line_dict[index]
+
+    def __str__(self):
+        return str(self.pi_vec) + "\n" + str(self.hidden_data)
         
 def corr_sum(matrix):
     num_hidden = matrix.shape[1]
@@ -84,18 +102,33 @@ def parse_correlation_file(correlation_file):
         all_data = f.readlines()
 
     all_groups = []
+    indices_dict = defaultdict(int)
     line_group = []
     for line in all_data:
         line_group.append(line.strip())
         if line.startswith("pi"):
+            # add info to relevant data structures
             all_groups.append(line_group)
+            #if len(line_group) <= 3:
+            indices = tuple([x.split(":")[0] for x in line_group[:-1]])
+            indices_dict[indices] += 1
+
+            # reset region
             line_group = []
 
+    sorted_d = sorted(indices_dict.items(), key=operator.itemgetter(1),reverse=True)
+    common_indices = [int(x) for x in sorted_d[0][0]] # this is the set we will use for all regions
+    
+    all_regions = []
     for line_group in all_groups:
-        region = RegionData(line_group)
+        #print(line_group)
+        region = RegionData(line_group, common_indices)
+        all_regions.append(region)
+        #print(region)
+        #input("enter to continue")
     
     print("avg non-zero", np.mean([len(x)-1 for x in all_groups]))
-    return all_groups
+    return all_regions, common_indices
 
 ################################################################################
 # MAIN
@@ -108,47 +141,53 @@ def main():
     #output_file = sys.argv[3]
 
     print("correlation file", correlation_file)
-    parse_correlation_file(correlation_file)
-    sys.exit()
-    print("hidden file", hidden_file)
-    print("output file", output_file)
-    title = make_title(hidden_file)
+    all_regions, common_indices = parse_correlation_file(correlation_file)
+    #sys.exit()
+    #print("hidden file", hidden_file)
+    #print("output file", output_file)
+    #title = make_title(hidden_file)
 
     # colormap
-    map = get_colormap(stats_file)
+    #map = get_colormap(stats_file)
 
-    stats = np.load(stats_file)
-    stats = np.delete(stats, 0, axis=1) # remove non-seg sites since 1-pop
-    stats = np.delete(stats, 9, axis=1) # remove first inter-SNP (all zeros)
+    #stats = np.load(stats_file)
+    #stats = np.delete(stats, 0, axis=1) # remove non-seg sites since 1-pop
+    #stats = np.delete(stats, 9, axis=1) # remove first inter-SNP (all zeros)
 
-    hidden = np.load(hidden_file)
-    print(stats.shape, hidden.shape)
-    assert stats.shape[0] == hidden.shape[0]
+    #hidden = np.load(hidden_file)
+    #print(stats.shape, hidden.shape)
+    #assert stats.shape[0] == hidden.shape[0]
 
-    num_stats = stats.shape[1]
-    num_hidden = hidden.shape[1]
+    #num_stats = stats.shape[1]
+    #num_hidden = hidden.shape[1]
 
-    all_correlations = np.zeros((num_stats, num_hidden))
-    not_nan = 0
+    #all_correlations = np.zeros((num_stats, num_hidden))
+    #not_nan = 0
     #max_corr = 0
 
-    for i in range(num_stats):
-        for j in range(num_hidden):
-            vec1 = stats[:,i]
-            vec2 = hidden[:,j]
+    for i in range(6):
+            
+        vec1 = [region.pi_vec[i] for region in all_regions]
+
+        for key in common_indices:
+            vec2 = [region.hidden_data[key][i] for region in all_regions] # TODO no hardcode 10!
+            
             merged = np.vstack((vec1, vec2))
+            print(np.corrcoef(merged)[0,1])
             if ABS:
                 corr = abs(np.corrcoef(merged)[0,1]) # doing absolute value
             else:
                 corr = np.corrcoef(merged)[0,1]
 
-            if not math.isnan(corr):
-                all_correlations[i,j] = corr
-                not_nan += 1
+        '''if not math.isnan(corr):
+            all_correlations[i,j] = corr
+            not_nan += 1
 
-                if abs(corr) > 0.35:
-                    print("corr", corr, "stat", i, "hidden", j)
-                    #max_corr = corr
+            if abs(corr) > 0.35:
+                print("corr", corr, "stat", i, "hidden", j)
+                #max_corr = corr'''
+        
+    sys.exit()
 
     print(all_correlations)
     print("frac not nan:", not_nan/(num_stats*num_hidden))
