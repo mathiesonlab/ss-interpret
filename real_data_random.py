@@ -274,7 +274,7 @@ class RealDataRandomIterator:
                 return None # no recursion if walking through the genome
 
         #print("start mid end", start_idx, mid_idx, end_idx)
-        hap_data = self.haps_all[start_idx:end_idx, :]
+        hap_data = np.copy(self.haps_all[start_idx:end_idx, :])
         start_base = self.pos_all[start_idx]
         end_base = self.pos_all[end_idx]
         positions = self.pos_all[start_idx:end_idx]
