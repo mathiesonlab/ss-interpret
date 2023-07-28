@@ -293,6 +293,7 @@ class RealDataRandomIterator:
             #unique, counts = np.unique(hap_data, return_counts=True)
             #print("hap_data", dict(zip(unique, counts)))
 
+            print("neg1", neg1)
             after = util.process_gt_dist(hap_data, dist_vec,
                 region_len=region_len, real=True, neg1=neg1)
             return after
