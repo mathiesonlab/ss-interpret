@@ -31,7 +31,7 @@ COLOR_MAP = {'YRI': 'PuOr', 'CEU': 'RdBu', 'CHB': 'PiYG', 'ESN': 'PuOr',
 class RegionData():
     """ class to store data for a region """
     def __init__(self, lines):
-        self.pi = lines[-1]
+        self.pi_vec = [float(x) for x in lines[-1].split(":")[1].split(",")]
         
 def corr_sum(matrix):
     num_hidden = matrix.shape[1]
@@ -79,28 +79,23 @@ def make_title(hidden_file):
     return title
 
 def parse_correlation_file(correlation_file):
-    """ parse correlation file into a matrix """
+    """ parse correlation file into groups of lines for each region """
     with open(correlation_file, "r") as f:
         all_data = f.readlines()
+
     all_groups = []
     line_group = []
     for line in all_data:
-        line_group.append(line)
+        line_group.append(line.strip())
         if line.startswith("pi"):
             all_groups.append(line_group)
             line_group = []
-        
-    print(len(all_groups))
-    print(all_groups[0])
-    print(all_groups[4])
-    '''num_stats = len(lines)
-    num_hidden = len(lines[0].split(","))
-    matrix = np.zeros((num_stats, num_hidden))
-    for i in range(num_stats):
-        line = lines[i].split(",")
-        for j in range(num_hidden):
-            matrix[i,j] = float(line[j])
-    return matrix'''
+
+    for line_group in all_groups:
+        region = RegionData(line_group)
+    
+    print("avg non-zero", np.mean([len(x)-1 for x in all_groups]))
+    return all_groups
 
 ################################################################################
 # MAIN
