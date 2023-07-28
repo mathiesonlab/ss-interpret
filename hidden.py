@@ -71,7 +71,7 @@ def compute_pi(hap_matrix):
 # UNPACKING THE DISCRIMINATOR
 ################################################################################
 
-def disc_along_genome(iterator, input_folder, output_file, fine_tune_disc=None):
+def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=None):
 
     if fine_tune_disc is None:
         disc = tf.saved_model.load(input_folder)
@@ -90,7 +90,8 @@ def disc_along_genome(iterator, input_folder, output_file, fine_tune_disc=None):
     all_regions = []
     #all_logits = []
 
-    out_file = open(output_file + ".txt", 'w')
+    if output_file is not None:
+        out_file = open(output_file + ".txt", 'w')
 
     # go through entire genome
     final_end = iterator.num_snps-NUM_SNPS
@@ -124,7 +125,11 @@ def disc_along_genome(iterator, input_folder, output_file, fine_tune_disc=None):
             #all_regions.append(after_perm.numpy()[0])
             #print(nonz_inds)
             for index in nonz_inds:
-                out_file.write(str(index) + ":" + ",".join([str(h) for h in after_perm[:,index]]) + "\n")
+                to_write = str(index) + ":" + ",".join([str(h) for h in after_perm[:,index]]) + "\n"
+                if output_file is not None:
+                    out_file.write(to_write)
+                else:
+                    print(to_write)
 
             # look at stats too
             # look at pi in blocks of 6:
@@ -134,7 +139,11 @@ def disc_along_genome(iterator, input_folder, output_file, fine_tune_disc=None):
                 pi = compute_pi(corrected[0,:,i:i+6,0]) # don't need inter-SNP 
                 pi_vector.append(pi)
             #all_stats.append(stats[0])
-            out_file.write("pi:" + ",".join([str(p) for p in pi_vector]) + "\n")
+            to_write = "pi:" + ",".join([str(p) for p in pi_vector]) + "\n"
+            if output_file is not None:
+                out_file.write(to_write)
+            else:
+                print(to_write)
             #input('enter: got through after perm')
 
         num_total += 1
@@ -182,7 +191,7 @@ if __name__ == "__main__":
     #    "sammet0_exp_CEU"]
     #disc_folders = ["brooks9_exp_YRI", "hall7_exp_YRI", "sammet5_exp_YRI", "goto6_exp_YRI", "hawes8_exp_YRI"]
     #for saved_model in disc_folders:
-    for i in range(20):
+    for i in range(4,5):#20):
         #print(disc_folders)
         '''if not HIDDEN: # only do hidden for fine-tune
             saved_model = disc_folders[0][:3] + "_" + str(i) + "_" + date
@@ -212,4 +221,4 @@ if __name__ == "__main__":
             print("output file", output_file)
             #if not os.path.isfile(output_file + ".txt"):
                 #print("would run predictions")
-            disc_along_genome(iterator, input_file, output_file)
+            disc_along_genome(iterator, input_file)#, output_file)
