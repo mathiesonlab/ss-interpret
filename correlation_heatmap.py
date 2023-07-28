@@ -28,6 +28,11 @@ COLOR_MAP = {'YRI': 'PuOr', 'CEU': 'RdBu', 'CHB': 'PiYG', 'ESN': 'PuOr',
 # HELPERS
 ################################################################################
 
+class RegionData():
+    """ class to store data for a region """
+    def __init__(self, lines):
+        self.pi = lines[-1]
+        
 def corr_sum(matrix):
     num_hidden = matrix.shape[1]
     return np.array([sum(matrix[:,j]) for j in range(num_hidden)])
@@ -76,9 +81,18 @@ def make_title(hidden_file):
 def parse_correlation_file(correlation_file):
     """ parse correlation file into a matrix """
     with open(correlation_file, "r") as f:
-        all_data = f.read()
-    all_regions = all_data.split("pi:")
-    print(len(all_regions))
+        all_data = f.readlines()
+    all_groups = []
+    line_group = []
+    for line in all_data:
+        line_group.append(line)
+        if line.startswith("pi"):
+            all_groups.append(line_group)
+            line_group = []
+        
+    print(len(all_groups))
+    print(all_groups[0])
+    print(all_groups[4])
     '''num_stats = len(lines)
     num_hidden = len(lines[0].split(","))
     matrix = np.zeros((num_stats, num_hidden))
