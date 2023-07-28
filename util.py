@@ -105,7 +105,6 @@ def major_minor(matrix, neg1):
             matrix[:,j] = 1 - matrix[:,j]
 
     # option to convert from 0/1 to -1/+1
-    print("major minor neg1", neg1)
     if neg1:
         matrix[matrix == 0] = -1
     # residual numbers higher than one may remain even though we restricted to

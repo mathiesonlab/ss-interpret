@@ -110,8 +110,8 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
         # neg1 is True for discriminator and False for summary stats
         region_disc = iterator.real_region(True, region_len, start_idx=start_idx)
         region_stat = iterator.real_region(False, region_len, start_idx=start_idx)
-        print(region_disc, region_stat)
-        input("enter printed regions")
+        #print(region_disc, region_stat)
+        #input("enter printed regions")
 
         # compute hidden layer or probability
         if region_disc is not None:
@@ -191,7 +191,7 @@ if __name__ == "__main__":
     #    "sammet0_exp_CEU"]
     #disc_folders = ["brooks9_exp_YRI", "hall7_exp_YRI", "sammet5_exp_YRI", "goto6_exp_YRI", "hawes8_exp_YRI"]
     #for saved_model in disc_folders:
-    for i in range(4,5):#20):
+    for i in range(1,20):
         #print(disc_folders)
         '''if not HIDDEN: # only do hidden for fine-tune
             saved_model = disc_folders[0][:3] + "_" + str(i) + "_" + date
@@ -221,4 +221,4 @@ if __name__ == "__main__":
             print("output file", output_file)
             #if not os.path.isfile(output_file + ".txt"):
                 #print("would run predictions")
-            disc_along_genome(iterator, input_file)#, output_file)
+            disc_along_genome(iterator, input_file, output_file)
