@@ -17,7 +17,6 @@ import tensorflow as tf
 import discriminator
 import global_vars
 import real_data_random
-#import ss_helpers
 
 ################################################################################
 # GLOBALS
@@ -54,14 +53,12 @@ def get_nonzero_indices(after_perm):
 
 def compute_pi(hap_matrix):
     """hap_matrix should be 2D, (num_haps, num_snps)"""
-    #print('pi', hap_matrix)
     num_haps = hap_matrix.shape[0]
     num_snps = hap_matrix.shape[1]
     
     # compute pi for each SNP
     num_ones = np.sum(hap_matrix, axis=0)
     num_zeros = num_haps - num_ones
-    #print(num_ones, num_zeros)
     per_snp_pi = [num_ones[i]*num_zeros[i] / scipy.special.comb(num_haps,num_ones[i]) for i in range(num_snps)]
    
     # return average pi
@@ -81,14 +78,12 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
     disc_recon = discriminator.OnePopModel(iterator.num_samples,
             saved_model=disc)
 
-    # options for discriminator (neg1 should be False for summary stats)
-    #neg1 = True
+    # options for discriminator
     region_len = False
     prev_chrom = None
 
     # setup output array
     all_regions = []
-    #all_logits = []
 
     if output_file is not None:
         out_file = open(output_file + ".txt", 'w')
@@ -104,14 +99,9 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
             prev_chrom = curr_chrom
 
         # get the region of real data
-        #print("OVERRIDING START IDX!!!!")
-        #start_idx = 7651637
-        #curr_chrom = iterator.chrom_all[start_idx]
         # neg1 is True for discriminator and False for summary stats
         region_disc = iterator.real_region(True, region_len, start_idx=start_idx)
         region_stat = iterator.real_region(False, region_len, start_idx=start_idx)
-        #print(region_disc, region_stat)
-        #input("enter printed regions")
 
         # compute hidden layer or probability
         if region_disc is not None:
@@ -122,8 +112,7 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
             #hidden_values = disc_recon.last_hidden_layer(corrected)
             after_perm = disc_recon.after_perm(corrected).numpy()[0]
             nonz_inds = get_nonzero_indices(after_perm)[0]
-            #all_regions.append(after_perm.numpy()[0])
-            #print(nonz_inds)
+            
             for index in nonz_inds:
                 to_write = str(index) + ":" + ",".join([str(h) for h in after_perm[:,index]]) + "\n"
                 if output_file is not None:
@@ -131,14 +120,13 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
                 else:
                     print(to_write)
 
-            # look at stats too
             # look at pi in blocks of 6:
             corrected[0] = region_stat
             pi_vector = []
             for i in range(0,NUM_SNPS,6):
                 pi = compute_pi(corrected[0,:,i:i+6,0]) # don't need inter-SNP 
                 pi_vector.append(pi)
-            #all_stats.append(stats[0])
+            
             to_write = "pi:" + ",".join([str(p) for p in pi_vector]) + "\n"
             if output_file is not None:
                 out_file.write(to_write)
@@ -150,15 +138,6 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
 
     print("num good regions", len(all_regions), "/", num_total) #NUM_REGIONS)
     out_file.close()
-    '''if HIDDEN:
-        np.save(output_file + ".npy", np.array(all_regions))
-    elif fine_tune_disc is None:
-        f = open(output_file + ".txt", 'w')
-        for row in all_regions:
-            f.write("\t".join([str(x) for x in row]) + "\n")
-        f.close()
-    else:
-        return all_logits'''
 
 ################################################################################
 # MAIN

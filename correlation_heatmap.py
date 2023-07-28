@@ -1,7 +1,7 @@
 """
-Compute correlation between summary statistics and last hidden layer.
+Compute correlation between pi and after permutation-invariant function layer.
 Author: Sara Mathieson
-Date: 12/14/22
+Date: 7/28/23
 """
 
 # python imports
@@ -13,13 +13,20 @@ import seaborn as sns
 from sklearn.cluster import AgglomerativeClustering
 import sys
 
-TICKS = [4.5, 26.5, 51.5, 59.5, 60.5]
-LABELS = ['SFS', 'inter-SNP distances', 'LD', '$\pi$', '#haps']
+################################################################################
+# GLOBALS
+################################################################################
 
-# globals
+#TICKS = [4.5, 26.5, 51.5, 59.5, 60.5]
+#LABELS = ['SFS', 'inter-SNP distances', 'LD', '$\pi$', '#haps']
+
 ABS = False # absolute value
 COLOR_MAP = {'YRI': 'PuOr', 'CEU': 'RdBu', 'CHB': 'PiYG', 'ESN': 'PuOr',
     'GBR': 'RdBu', 'CHS': 'PiYG'}
+
+################################################################################
+# HELPERS
+################################################################################
 
 def corr_sum(matrix):
     num_hidden = matrix.shape[1]
@@ -66,13 +73,34 @@ def make_title(hidden_file):
     title = "train: " + train + ", test: " + test + ", seed: " + seed
     return title
 
+def parse_correlation_file(correlation_file):
+    """ parse correlation file into a matrix """
+    with open(correlation_file, "r") as f:
+        all_data = f.read()
+    all_regions = all_data.split("pi:")
+    print(len(all_regions))
+    '''num_stats = len(lines)
+    num_hidden = len(lines[0].split(","))
+    matrix = np.zeros((num_stats, num_hidden))
+    for i in range(num_stats):
+        line = lines[i].split(",")
+        for j in range(num_hidden):
+            matrix[i,j] = float(line[j])
+    return matrix'''
+
+################################################################################
+# MAIN
+################################################################################
+
 def main():
     # input and output files
-    stats_file = sys.argv[1]
-    hidden_file = sys.argv[2]
-    output_file = sys.argv[3]
+    correlation_file = sys.argv[1]
+    #hidden_file = sys.argv[2]
+    #output_file = sys.argv[3]
 
-    print("stats file", stats_file)
+    print("correlation file", correlation_file)
+    parse_correlation_file(correlation_file)
+    sys.exit()
     print("hidden file", hidden_file)
     print("output file", output_file)
     title = make_title(hidden_file)
