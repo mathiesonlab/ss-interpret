@@ -22,6 +22,8 @@ import sys
 #TICKS = [4.5, 26.5, 51.5, 59.5, 60.5]
 #LABELS = ['SFS', 'inter-SNP distances', 'LD', '$\pi$', '#haps']
 
+NUM_META_SNPS = 6 # after pooling we have this many "SNPs"
+
 ABS = False # absolute value
 COLOR_MAP = {'YRI': 'PuOr', 'CEU': 'RdBu', 'CHB': 'PiYG', 'ESN': 'PuOr',
     'GBR': 'RdBu', 'CHS': 'PiYG'}
@@ -117,17 +119,16 @@ def parse_correlation_file(correlation_file):
             line_group = []
 
     sorted_d = sorted(indices_dict.items(), key=operator.itemgetter(1),reverse=True)
+    frac = sorted_d[0][1] / len(all_groups)
     common_indices = [int(x) for x in sorted_d[0][0]] # this is the set we will use for all regions
     
     all_regions = []
     for line_group in all_groups:
-        #print(line_group)
         region = RegionData(line_group, common_indices)
         all_regions.append(region)
-        #print(region)
-        #input("enter to continue")
     
     print("avg non-zero", np.mean([len(x)-1 for x in all_groups]))
+    print("common indices", common_indices, "frac", frac)
     return all_regions, common_indices
 
 ################################################################################
@@ -136,58 +137,60 @@ def parse_correlation_file(correlation_file):
 
 def main():
     # input and output files
-    correlation_file = sys.argv[1]
-    #hidden_file = sys.argv[2]
-    #output_file = sys.argv[3]
+    stats_file = sys.argv[1]
+    hidden_pi_file = sys.argv[2]
+    output_file = sys.argv[3]
+    print("stats file", stats_file)
+    print("hidden pi file", hidden_pi_file)
+    print("output file", output_file)
 
-    print("correlation file", correlation_file)
-    all_regions, common_indices = parse_correlation_file(correlation_file)
+    all_hidden, common_indices = parse_correlation_file(hidden_pi_file)
+    title = make_title(hidden_pi_file)
+    print(title)
     #sys.exit()
-    #print("hidden file", hidden_file)
-    #print("output file", output_file)
-    #title = make_title(hidden_file)
 
     # colormap
-    #map = get_colormap(stats_file)
+    map = get_colormap(stats_file)
 
-    #stats = np.load(stats_file)
-    #stats = np.delete(stats, 0, axis=1) # remove non-seg sites since 1-pop
-    #stats = np.delete(stats, 9, axis=1) # remove first inter-SNP (all zeros)
-
-    #hidden = np.load(hidden_file)
-    #print(stats.shape, hidden.shape)
-    #assert stats.shape[0] == hidden.shape[0]
-
-    #num_stats = stats.shape[1]
-    #num_hidden = hidden.shape[1]
-
-    #all_correlations = np.zeros((num_stats, num_hidden))
-    #not_nan = 0
+    stats = np.load(stats_file)
+    stats = np.delete(stats, 0, axis=1) # remove non-seg sites since 1-pop
+    stats = np.delete(stats, 9, axis=1) # remove first inter-SNP (all zeros)
+    assert stats.shape[0] == len(all_hidden)
+    
+    # set up correlation matrix
+    num_stats = stats.shape[1]
+    num_hidden = NUM_META_SNPS*len(all_hidden[0].hidden_data)
+    all_correlations = np.zeros((num_stats, num_hidden))
+    not_nan = 0
     #max_corr = 0
 
-    for i in range(6):
-            
-        vec1 = [region.pi_vec[i] for region in all_regions]
+    #for i in range(NUM_META_SNPS):
+    #vec1 = [region.pi_vec[i] for region in all_hidden]
 
-        for key in common_indices:
-            vec2 = [region.hidden_data[key][i] for region in all_regions] # TODO no hardcode 10!
+    for i in range(num_stats):
+        for j in range(NUM_META_SNPS): # TODO num_hidden):
+            vec1 = stats[:,i]
+            #vec2 = hidden[:,j]
+
+            #for key in common_indices:
+            vec2 = [region.hidden_data[10][j] for region in all_hidden] # TODO 10
             
             merged = np.vstack((vec1, vec2))
-            print(np.corrcoef(merged)[0,1])
+            #print(np.corrcoef(merged)[0,1])
             if ABS:
                 corr = abs(np.corrcoef(merged)[0,1]) # doing absolute value
             else:
                 corr = np.corrcoef(merged)[0,1]
 
-        '''if not math.isnan(corr):
-            all_correlations[i,j] = corr
-            not_nan += 1
+            if not math.isnan(corr):
+                all_correlations[i,j] = corr
+                not_nan += 1
 
-            if abs(corr) > 0.35:
-                print("corr", corr, "stat", i, "hidden", j)
-                #max_corr = corr'''
+                if abs(corr) > 0.35:
+                    print("corr", corr, "stat", i, "hidden", j)
+                    #max_corr = corr
         
-    sys.exit()
+    #sys.exit()
 
     print(all_correlations)
     print("frac not nan:", not_nan/(num_stats*num_hidden))
@@ -208,8 +211,8 @@ def main():
         ax = sns.heatmap(all_correlations_sorted, vmin=-0.5, vmax=0.5, cmap=map)
 
     # tick locations
-    ax.yaxis.set_minor_locator(ticker.FixedLocator(TICKS))
-    ax.yaxis.set_major_locator(ticker.FixedLocator([0,9,44,59,60,61]))
+    #ax.yaxis.set_minor_locator(ticker.FixedLocator(TICKS))
+    #ax.yaxis.set_major_locator(ticker.FixedLocator([0,9,44,59,60,61]))
 
     # tick labels
     ax.yaxis.set_major_formatter(ticker.NullFormatter())
@@ -223,16 +226,16 @@ def main():
         label.set_verticalalignment('center')
 
     # rotate long names and space out last few
-    tick_objs = ax.get_yticklabels(minor=True)
-    tick_objs[0].set_rotation(90)
-    tick_objs[1].set_rotation(90)
+    #tick_objs = ax.get_yticklabels(minor=True)
+    #tick_objs[0].set_rotation(90)
+    #tick_objs[1].set_rotation(90)
     #tick_objs[-2].set_verticalalignment('bottom')
-    tick_objs[-1].set_verticalalignment('top')
+    #tick_objs[-1].set_verticalalignment('top')
 
     plt.title(title)
     plt.tight_layout()
-    #plt.show()
-    plt.savefig(output_file)
+    plt.show()
+    #plt.savefig(output_file)
 
 def test_clustering():
     pairs = np.array([[0, 3], [1, 2], [4,5]])
