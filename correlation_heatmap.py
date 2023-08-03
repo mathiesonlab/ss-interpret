@@ -254,8 +254,8 @@ def main():
     format_yticks(ax)
     plt.title(title)
     plt.tight_layout()
-    plt.show()
-    #plt.savefig(output_file)
+    #plt.show()
+    plt.savefig(output_file)
 
 def test_clustering():
     pairs = np.array([[0, 3], [1, 2], [4,5]])
