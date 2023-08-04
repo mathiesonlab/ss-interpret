@@ -60,8 +60,10 @@ def compute_pi(hap_matrix):
     # compute pi for each SNP
     num_ones = np.sum(hap_matrix, axis=0)
     num_zeros = num_haps - num_ones
-    per_snp_pi = [num_ones[i]*num_zeros[i] / scipy.special.comb(num_haps,num_ones[i]) for i in range(num_snps)]
-   
+    #per_snp_pi = [num_ones[i]*num_zeros[i] / scipy.special.comb(num_haps,num_ones[i]) for i in range(num_snps)]
+    
+    per_snp_pi = [num_ones[i]*num_zeros[i] / (num_haps*(num_haps-1)/2) for i in range(num_snps)]
+
     # return average pi
     return np.mean(per_snp_pi)
 
