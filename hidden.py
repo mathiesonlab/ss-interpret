@@ -122,7 +122,7 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
 
             # look at pi in blocks of 6:
             corrected[0] = region_stat
-            pi_all = compute_pi(corrected)
+            pi_all = compute_pi(corrected[0,:,:,0])
             print("pi region 0", pi_all*NUM_SNPS)
             sys.exit()
 
