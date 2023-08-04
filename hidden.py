@@ -123,8 +123,8 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
             # look at pi in blocks of 6:
             corrected[0] = region_stat
             pi_all = compute_pi(corrected[0,:,:,0])
-            print("pi region 0", pi_all*NUM_SNPS)
-            sys.exit()
+            print("pi region:", pi_all*NUM_SNPS)
+            input('enter')
 
             # within "meta" SNPs
             pi_vector = []
@@ -175,7 +175,7 @@ if __name__ == "__main__":
     #    "sammet0_exp_CEU"]
     #disc_folders = ["brooks9_exp_YRI", "hall7_exp_YRI", "sammet5_exp_YRI", "goto6_exp_YRI", "hawes8_exp_YRI"]
     #for saved_model in disc_folders:
-    for i in range(1,20):
+    for i in range(20):
         #print(disc_folders)
         '''if not HIDDEN: # only do hidden for fine-tune
             saved_model = disc_folders[0][:3] + "_" + str(i) + "_" + date
