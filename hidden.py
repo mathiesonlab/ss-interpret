@@ -53,6 +53,7 @@ def get_nonzero_indices(after_perm):
 
 def compute_pi(hap_matrix):
     """hap_matrix should be 2D, (num_haps, num_snps)"""
+    print(hap_matrix.shape)
     num_haps = hap_matrix.shape[0]
     num_snps = hap_matrix.shape[1]
     
@@ -62,6 +63,27 @@ def compute_pi(hap_matrix):
     per_snp_pi = [num_ones[i]*num_zeros[i] / scipy.special.comb(num_haps,num_ones[i]) for i in range(num_snps)]
    
     # return average pi
+    return np.mean(per_snp_pi)
+
+def homozygosity(site):
+    num_indvs = len(site)//2
+    homoz = 0
+    for i in range(0, len(site), 2):
+        if site[i] == site[i+1]:
+            homoz += 1
+    return homoz/num_indvs
+
+def thetapi(hap_matrix):
+    """hap_matrix should be 2D, (num_haps, num_snps)"""
+    print(hap_matrix.shape)
+    #num_haps = hap_matrix.shape[0]
+    num_snps = hap_matrix.shape[1]
+
+    per_snp_pi = []
+    for s in range(num_snps):
+        homoz = homozygosity(hap_matrix[:,s])
+        per_snp_pi.append(sum(hap_matrix[:,s])/(1-homoz))
+
     return np.mean(per_snp_pi)
 
 ################################################################################
@@ -123,7 +145,9 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
             # look at pi in blocks of 6:
             corrected[0] = region_stat
             pi_all = compute_pi(corrected[0,:,:,0])
+            theta  = thetapi(corrected[0,:,:,0])
             print("pi region:", pi_all*NUM_SNPS)
+            print("thetapi", theta*NUM_SNPS)
             input('enter')
 
             # within "meta" SNPs

@@ -197,10 +197,8 @@ def main():
     stats = np.delete(stats, 0, axis=1) # remove non-seg sites since 1-pop
     stats = np.delete(stats, 9, axis=1) # remove first inter-SNP (all zeros)
 
-    print("region 0 stat", stats[0,-2])
-    print("region 1 stat", stats[1,-2])
-    print("region 2 stat", stats[2,-2])
-    print("region 3 stat", stats[3,-2])
+    for x in range(10):
+        print("region pi", x, stats[x,-2])
     sys.exit()
 
     # load hidden pi
