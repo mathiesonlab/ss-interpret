@@ -197,7 +197,8 @@ def main():
     stats = np.delete(stats, 0, axis=1) # remove non-seg sites since 1-pop
     stats = np.delete(stats, 9, axis=1) # remove first inter-SNP (all zeros)
 
-    #print("pi stat", stats[0,-2])
+    print("region 0 stat", stats[0])
+    sys.exit()
 
     # load hidden pi
     all_hidden, common_indices = parse_correlation_file(hidden_pi_file)

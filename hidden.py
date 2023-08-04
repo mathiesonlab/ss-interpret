@@ -122,6 +122,11 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
 
             # look at pi in blocks of 6:
             corrected[0] = region_stat
+            pi_all = compute_pi(corrected)
+            print("pi region 0", pi_all*NUM_SNPS)
+            sys.exit()
+
+            # within "meta" SNPs
             pi_vector = []
             for i in range(0,NUM_SNPS,6):
                 pi = compute_pi(corrected[0,:,i:i+6,0]) # don't need inter-SNP 
@@ -192,12 +197,7 @@ if __name__ == "__main__":
         if saved_model in disc_folders: # already trained
             input_file = input_folder + saved_model
             print("input disc", input_file)
-            #if HIDDEN:
             kw = "hidden_pi_"
-            #else:
-            #    kw = "prob_"
-            output_file = output_folder + kw + saved_model + "_" + pop
-            print("output file", output_file)
-            #if not os.path.isfile(output_file + ".txt"):
-                #print("would run predictions")
-            disc_along_genome(iterator, input_file, output_file)
+            #output_file = output_folder + kw + saved_model + "_" + pop
+            #print("output file", output_file)
+            disc_along_genome(iterator, input_file)#, output_file)
