@@ -76,15 +76,26 @@ def homozygosity(site):
 def thetapi(hap_matrix):
     """hap_matrix should be 2D, (num_haps, num_snps)"""
     print(hap_matrix.shape)
-    #num_haps = hap_matrix.shape[0]
+    num_haps = hap_matrix.shape[0]
     num_snps = hap_matrix.shape[1]
 
-    per_snp_pi = []
+    num_ones = np.sum(hap_matrix, axis=0)
+    num_zeros = num_haps - num_ones
+
+    '''per_snp_pi = []
     for s in range(num_snps):
         homoz = homozygosity(hap_matrix[:,s])
         per_snp_pi.append(sum(hap_matrix[:,s])/(1-homoz))
 
-    return np.mean(per_snp_pi)
+    return np.mean(per_snp_pi)'''
+
+    pi = 0.0
+    for i in range(num_snps):
+        #homozygosity = 0.0
+        homozygosity = num_zeros[i] * (num_zeros[i] - 1)
+        homozygosity += num_ones[i] * (num_ones[i] - 1)   
+        pi += 1.0 - homozygosity / (num_haps * (num_haps - 1))
+    return pi
 
 ################################################################################
 # UNPACKING THE DISCRIMINATOR
