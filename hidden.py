@@ -158,7 +158,7 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
             pi_all = compute_pi(corrected[0,:,:,0])
             theta  = thetapi(corrected[0,:,:,0])
             print("pi region:", pi_all*NUM_SNPS)
-            print("thetapi", theta*NUM_SNPS)
+            print("thetapi", theta)
             input('enter')
 
             # within "meta" SNPs
