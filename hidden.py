@@ -140,10 +140,10 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
 
             # look at pi in blocks of 6:
             corrected[0] = region_stat
-            pi_all = compute_pi(corrected[0,:,:,0])
+            '''pi_all = compute_pi(corrected[0,:,:,0])
             theta  = thetapi(corrected[0,:,:,0])
             print("pi region:", pi_all)
-            print("thetapi", theta)
+            print("thetapi", theta)'''
 
             # within "meta" SNPs
             pi_vector = []
@@ -156,7 +156,7 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
                 out_file.write(to_write)
             else:
                 print(to_write)
-            input('enter: got through after perm')
+            #input('enter: got through after perm')
 
         num_total += 1
 
@@ -217,6 +217,6 @@ if __name__ == "__main__":
             input_file = input_folder + saved_model
             print("input disc", input_file)
             kw = "hidden_pi_"
-            #output_file = output_folder + kw + saved_model + "_" + pop
-            #print("output file", output_file)
-            disc_along_genome(iterator, input_file)#, output_file)
+            output_file = output_folder + kw + saved_model + "_" + pop
+            print("output file", output_file)
+            disc_along_genome(iterator, input_file, output_file)
