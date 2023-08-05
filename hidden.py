@@ -59,21 +59,11 @@ def compute_pi(hap_matrix):
     
     # compute pi for each SNP
     num_ones = np.sum(hap_matrix, axis=0)
-    num_zeros = num_haps - num_ones
-    #per_snp_pi = [num_ones[i]*num_zeros[i] / scipy.special.comb(num_haps,num_ones[i]) for i in range(num_snps)]
-    
+    num_zeros = num_haps - num_ones    
     per_snp_pi = [num_ones[i]*num_zeros[i] / (num_haps*(num_haps-1)/2) for i in range(num_snps)]
 
-    # return average pi
-    return np.mean(per_snp_pi)
-
-def homozygosity(site):
-    num_indvs = len(site)//2
-    homoz = 0
-    for i in range(0, len(site), 2):
-        if site[i] == site[i+1]:
-            homoz += 1
-    return homoz/num_indvs
+    # return sum over all SNPs
+    return np.sum(per_snp_pi)
 
 def thetapi(hap_matrix):
     """hap_matrix should be 2D, (num_haps, num_snps)"""
@@ -83,13 +73,6 @@ def thetapi(hap_matrix):
 
     num_ones = np.sum(hap_matrix, axis=0)
     num_zeros = num_haps - num_ones
-
-    '''per_snp_pi = []
-    for s in range(num_snps):
-        homoz = homozygosity(hap_matrix[:,s])
-        per_snp_pi.append(sum(hap_matrix[:,s])/(1-homoz))
-
-    return np.mean(per_snp_pi)'''
 
     pi = 0.0
     for i in range(num_snps):
@@ -159,9 +142,8 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
             corrected[0] = region_stat
             pi_all = compute_pi(corrected[0,:,:,0])
             theta  = thetapi(corrected[0,:,:,0])
-            print("pi region:", pi_all*NUM_SNPS)
+            print("pi region:", pi_all)
             print("thetapi", theta)
-            input('enter')
 
             # within "meta" SNPs
             pi_vector = []
@@ -174,7 +156,7 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
                 out_file.write(to_write)
             else:
                 print(to_write)
-            #input('enter: got through after perm')
+            input('enter: got through after perm')
 
         num_total += 1
 
