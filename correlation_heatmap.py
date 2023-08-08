@@ -12,7 +12,7 @@ import math
 import numpy as np
 import operator
 import seaborn as sns
-from sklearn.cluster import AgglomerativeClustering
+#from sklearn.cluster import AgglomerativeClustering
 import sys
 
 ################################################################################
@@ -23,6 +23,7 @@ TICKS = [4.5, 26.5, 51.5, 59.5, 60.5]
 LABELS = ['SFS', 'inter-SNP distances', 'LD', '$\pi$', '#haps']
 
 NUM_META_SNPS = 6 # after pooling we have this many "SNPs"
+ALL_STATS = False # if True, plot all stats, otherwise just per-SNP pi
 
 ABS = False # absolute value
 COLOR_MAP = {'YRI': 'PuOr', 'CEU': 'RdBu', 'CHB': 'PiYG', 'ESN': 'PuOr',
@@ -51,8 +52,6 @@ class RegionData():
                 self.hidden_data[index] = line_dict[index]
 
     def __str__(self):
-        #print("pi", np.average(self.pi_vec))
-        #input('enter')
         return str(self.pi_vec) + "\n" + str(self.hidden_data)
         
 def corr_sum(matrix):
@@ -80,14 +79,6 @@ def order_from_children(idx, child_pairs):
     else:
         return list(child_pairs[idx])
 
-def get_colormap(stats_file):
-    pop = stats_file.split("/")[-1].split("_")[1].split(".")[0]
-    return COLOR_MAP[pop]
-
-'''def xticks_format_function(tick, tick_pos):
-    idx = TICKS.index(tick)
-    return LABELS[idx]'''
-
 def yticks_format_function(tick, tick_pos):
     idx = TICKS.index(tick)
     return LABELS[idx]
@@ -102,7 +93,7 @@ def make_title(hidden_file):
     test  = filename[-1]
     seed  = ''.join(c for c in filename[3] if c.isdigit())
     title = "train: " + train + ", test: " + test + ", seed: " + seed
-    return title
+    return title, train
 
 def parse_correlation_file(correlation_file):
     """ parse correlation file into groups of lines for each region """
@@ -179,7 +170,7 @@ def format_xticks(ax, common_indices):
 # MAIN
 ################################################################################
 
-def main():
+def main_all_stats():
     # input and output files
     stats_file = sys.argv[1]
     hidden_pi_file = sys.argv[2]
@@ -189,17 +180,13 @@ def main():
     print("output file", output_file)
 
     # for plotting
-    title = make_title(hidden_pi_file)
-    map = get_colormap(stats_file)
+    title, train = make_title(hidden_pi_file)
+    map = COLOR_MAP[train]
 
     # load stats
     stats = np.load(stats_file)
     stats = np.delete(stats, 0, axis=1) # remove non-seg sites since 1-pop
     stats = np.delete(stats, 9, axis=1) # remove first inter-SNP (all zeros)
-
-    for x in range(10):
-        print("region pi", x, stats[x,-2])
-    sys.exit()
 
     # load hidden pi
     all_hidden, common_indices = parse_correlation_file(hidden_pi_file)
@@ -259,6 +246,75 @@ def main():
     #plt.show()
     plt.savefig(output_file)
 
+def main_pi():
+    # input and output files
+    #stats_file = sys.argv[1]
+    hidden_pi_file = sys.argv[1]
+    output_file = sys.argv[2]
+    print("hidden pi file", hidden_pi_file)
+    print("output file", output_file)
+
+    # for plotting
+    title, train = make_title(hidden_pi_file)
+    map = COLOR_MAP[train]
+
+    # load hidden pi
+    all_hidden, common_indices = parse_correlation_file(hidden_pi_file)
+    
+    # set up correlation matrix
+    num_stats = NUM_META_SNPS
+    num_hidden = NUM_META_SNPS*len(all_hidden[0].hidden_data)
+    all_correlations = np.zeros((num_stats, num_hidden))
+    not_nan = 0
+    #max_corr = 0
+
+    for i in range(num_stats):
+        vec1 = [region.pi_vec[i] for region in all_hidden]
+
+        for j, key in enumerate(common_indices):
+            for s in range(NUM_META_SNPS):
+                vec2 = [region.hidden_data[key][s] for region in all_hidden]
+        
+                merged = np.vstack((vec1, vec2))
+                #print(np.corrcoef(merged)[0,1])
+                if ABS:
+                    corr = abs(np.corrcoef(merged)[0,1]) # doing absolute value
+                else:
+                    corr = np.corrcoef(merged)[0,1]
+
+                if not math.isnan(corr):
+                    all_correlations[i,j*NUM_META_SNPS+s] = corr
+                    not_nan += 1
+
+                    if abs(corr) > 0.35:
+                        print("corr", corr, "stat", i, "hidden", j)
+                        #max_corr = corr
+
+    print("frac not nan:", not_nan/(num_stats*num_hidden))
+
+    # sort columns (hidden units) by sum of their correlations
+    '''all_cor_sums = corr_sum(all_correlations)
+    order = np.argsort(all_cor_sums)[::-1]'''
+
+    # sort using clustering instead
+    '''clustering = AgglomerativeClustering().fit(np.transpose(all_correlations))
+    order = order_from_children(-1, clustering.children_) # last pair 2 clusters
+    all_correlations_sorted = all_correlations[:, order]'''
+
+    # plot heatmap
+    if ABS:
+        sns.heatmap(all_correlations, vmin=0, vmax=0.5, cmap="Blues")
+    else:
+        ax = sns.heatmap(all_correlations, vmin=-0.5, vmax=0.5, cmap=map)
+
+    # plotting
+    format_xticks(ax, common_indices)
+    #format_yticks(ax)
+    plt.title(title)
+    plt.tight_layout()
+    #plt.show()
+    plt.savefig(output_file)
+
 def test_clustering():
     pairs = np.array([[0, 3], [1, 2], [4,5]])
     order = order_from_children(-1, pairs)
@@ -266,4 +322,7 @@ def test_clustering():
 
 if __name__ == "__main__":
     #test_clustering()
-    main()
+    if ALL_STATS:
+        main_all_stats()
+    else:
+        main_pi()

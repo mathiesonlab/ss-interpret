@@ -9,11 +9,11 @@ for SEED in $(seq 0 19)
 do
   DISC=${TRAIN_POP}"_"${SEED}"_"${DATE}"_finetune"
   
-  # HEATMAPS
-  echo "python3 correlation_heatmap.py ${MAIN_FOLDER}/summary_stats/stats_${TEST_POP}.npy ${MAIN_FOLDER}/hidden_pi/hidden_pi_${DISC}_${TEST_POP}.txt ${MAIN_FOLDER}/heatmaps/afterperm_${DISC}_${TEST_POP}.pdf"
-  python3 correlation_heatmap.py ${MAIN_FOLDER}/summary_stats/stats_${TEST_POP}.npy ${MAIN_FOLDER}/hidden_pi/hidden_pi_${DISC}_${TEST_POP}.txt ${MAIN_FOLDER}/heatmaps/afterperm_${DISC}_${TEST_POP}.pdf
+  # HEATMAPS (all stats)
+  #echo "python3 correlation_heatmap.py ${MAIN_FOLDER}/summary_stats/stats_${TEST_POP}.npy ${MAIN_FOLDER}/hidden_pi/hidden_pi_${DISC}_${TEST_POP}.txt ${MAIN_FOLDER}/heatmaps/afterperm_${DISC}_${TEST_POP}.pdf"
+  #python3 correlation_heatmap.py ${MAIN_FOLDER}/summary_stats/stats_${TEST_POP}.npy ${MAIN_FOLDER}/hidden_pi/hidden_pi_${DISC}_${TEST_POP}.txt ${MAIN_FOLDER}/heatmaps/afterperm_${DISC}_${TEST_POP}.pdf
 
-  # MANHATTAN PLOTS
-  #echo "python3 manhattan/plot_manhattan.py ${DISC_FOLDER}/predictions/prob_${DISC}_${TEST_POP}.txt ${DISC_FOLDER}/figures/manhattan/mh_${DISC}_${TEST_POP}.png"
-  #python3 manhattan/plot_manhattan.py ${DISC_FOLDER}/predictions/prob_${DISC}_${TEST_POP}.txt ${DISC_FOLDER}/figures/manhattan/mh_${DISC}_${TEST_POP}.png
+  # HEATMAPS (per-SNP pi)
+  echo "python3 correlation_heatmap.py ${MAIN_FOLDER}/hidden_pi/hidden_pi_${DISC}_${TEST_POP}.txt ${MAIN_FOLDER}/heatmaps/perSnpPi_${DISC}_${TEST_POP}.pdf"
+  python3 correlation_heatmap.py ${MAIN_FOLDER}/hidden_pi/hidden_pi_${DISC}_${TEST_POP}.txt ${MAIN_FOLDER}/heatmaps/perSnpPi_${DISC}_${TEST_POP}.pdf
 done

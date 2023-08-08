@@ -9,7 +9,6 @@ Date: 7/26/23
 import math
 import numpy as np
 import os
-import scipy.special
 import sys
 import tensorflow as tf
 
@@ -40,8 +39,8 @@ def get_prob(x):
 def get_pop(h5_filename):
     return h5_filename.split("/")[-1].split(".")[0]
 
-# write a function that takes a vector and returns the indicies of non-zero values
 def get_nonzero_indices(after_perm):
+    """takes a vector and returns the indicies of non-zero values"""
     num_nonz = 0
     nonz_return = None
     for row in after_perm:
@@ -60,13 +59,14 @@ def compute_pi(hap_matrix):
     # compute pi for each SNP
     num_ones = np.sum(hap_matrix, axis=0)
     num_zeros = num_haps - num_ones    
-    per_snp_pi = [num_ones[i]*num_zeros[i] / (num_haps*(num_haps-1)/2) for i in range(num_snps)]
+    per_snp_pi = [num_ones[i]*num_zeros[i] / (num_haps*(num_haps-1)/2) for i in\
+                  range(num_snps)]
 
     # return sum over all SNPs
     return np.sum(per_snp_pi)
 
 def thetapi(hap_matrix):
-    """hap_matrix should be 2D, (num_haps, num_snps)"""
+    """hap_matrix should be 2D, (num_haps, num_snps), based on libsequence"""
     print(hap_matrix.shape)
     num_haps = hap_matrix.shape[0]
     num_snps = hap_matrix.shape[1]
@@ -76,7 +76,6 @@ def thetapi(hap_matrix):
 
     pi = 0.0
     for i in range(num_snps):
-        #homozygosity = 0.0
         homozygosity = num_zeros[i] * (num_zeros[i] - 1)
         homozygosity += num_ones[i] * (num_ones[i] - 1)   
         pi += 1.0 - homozygosity / (num_haps * (num_haps - 1))
@@ -86,7 +85,8 @@ def thetapi(hap_matrix):
 # UNPACKING THE DISCRIMINATOR
 ################################################################################
 
-def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=None):
+def disc_along_genome(iterator, input_folder, output_file=None, 
+                      fine_tune_disc=None):
 
     if fine_tune_disc is None:
         disc = tf.saved_model.load(input_folder)
@@ -140,10 +140,6 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
 
             # look at pi in blocks of 6:
             corrected[0] = region_stat
-            '''pi_all = compute_pi(corrected[0,:,:,0])
-            theta  = thetapi(corrected[0,:,:,0])
-            print("pi region:", pi_all)
-            print("thetapi", theta)'''
 
             # within "meta" SNPs
             pi_vector = []
@@ -156,11 +152,10 @@ def disc_along_genome(iterator, input_folder, output_file=None, fine_tune_disc=N
                 out_file.write(to_write)
             else:
                 print(to_write)
-            #input('enter: got through after perm')
 
         num_total += 1
 
-    print("num good regions", len(all_regions), "/", num_total) #NUM_REGIONS)
+    print("num good regions", len(all_regions), "/", num_total)
     out_file.close()
 
 ################################################################################
@@ -188,12 +183,6 @@ if __name__ == "__main__":
     iterator = get_iterator(h5_filename, bed_filename)
 
     # last hidden layer or prediction for all regions
-    #disc_folders = ["brooks14_exp_CEU", "brooks9_exp_CEU", "goto1_exp_CEU", "hawes13_exp_CEU",
-    #    "joshi12_exp_CEU", "joshi7_exp_CEU", "rao8_exp_CEU", "sammet10_exp_CEU", "brooks4_exp_CEU",
-    #    "goto11_exp_CEU", "goto6_exp_CEU", "hawes5_exp_CEU", "joshi2_exp_CEU", "rao3_exp_CEU",
-    #    "sammet0_exp_CEU"]
-    #disc_folders = ["brooks9_exp_YRI", "hall7_exp_YRI", "sammet5_exp_YRI", "goto6_exp_YRI", "hawes8_exp_YRI"]
-    #for saved_model in disc_folders:
     for i in range(20):
         #print(disc_folders)
         '''if not HIDDEN: # only do hidden for fine-tune
