@@ -21,6 +21,7 @@ import sys
 
 TICKS = [4.5, 26.5, 51.5, 59.5, 60.5]
 LABELS = ['SFS', 'inter-SNP distances', 'LD', '$\pi$', '#haps']
+MAX_COR = 0.5
 
 NUM_META_SNPS = 6 # after pooling we have this many "SNPs"
 ALL_STATS = False # if True, plot all stats, otherwise just per-SNP pi
@@ -217,7 +218,7 @@ def main_all_stats():
                     all_correlations[i,j*NUM_META_SNPS+s] = corr
                     not_nan += 1
 
-                    if abs(corr) > 0.35:
+                    if abs(corr) > MAX_COR:
                         print("corr", corr, "stat", i, "hidden", j)
                         #max_corr = corr
 
@@ -234,9 +235,9 @@ def main_all_stats():
 
     # plot heatmap
     if ABS:
-        sns.heatmap(all_correlations, vmin=0, vmax=0.5, cmap="Blues")
+        sns.heatmap(all_correlations, vmin=0, vmax=MAX_COR, cmap="Blues")
     else:
-        ax = sns.heatmap(all_correlations, vmin=-0.5, vmax=0.5, cmap=map)
+        ax = sns.heatmap(all_correlations, vmin=-MAX_COR, vmax=MAX_COR, cmap=map)
 
     # plotting
     format_xticks(ax, common_indices)
@@ -286,7 +287,7 @@ def main_pi():
                     all_correlations[i,j*NUM_META_SNPS+s] = corr
                     not_nan += 1
 
-                    if abs(corr) > 0.35:
+                    if abs(corr) > MAX_COR:
                         print("corr", corr, "stat", i, "hidden", j)
                         #max_corr = corr
 
@@ -303,9 +304,9 @@ def main_pi():
 
     # plot heatmap
     if ABS:
-        sns.heatmap(all_correlations, vmin=0, vmax=0.5, cmap="Blues")
+        sns.heatmap(all_correlations, vmin=0, vmax=MAX_COR, cmap="Blues")
     else:
-        ax = sns.heatmap(all_correlations, vmin=-0.5, vmax=0.5, cmap=map)
+        ax = sns.heatmap(all_correlations, vmin=-MAX_COR, vmax=MAX_COR, cmap=map)
 
     # plotting
     format_xticks(ax, common_indices)
