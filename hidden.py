@@ -52,7 +52,7 @@ def get_nonzero_indices(after_perm):
 
 def compute_pi(hap_matrix):
     """hap_matrix should be 2D, (num_haps, num_snps)"""
-    print(hap_matrix.shape)
+    #print(hap_matrix.shape)
     num_haps = hap_matrix.shape[0]
     num_snps = hap_matrix.shape[1]
     
@@ -67,7 +67,7 @@ def compute_pi(hap_matrix):
 
 def thetapi(hap_matrix):
     """hap_matrix should be 2D, (num_haps, num_snps), based on libsequence"""
-    print(hap_matrix.shape)
+    #print(hap_matrix.shape)
     num_haps = hap_matrix.shape[0]
     num_snps = hap_matrix.shape[1]
 
