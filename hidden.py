@@ -138,6 +138,12 @@ def disc_along_genome(iterator, input_folder, output_file=None,
                 else:
                     print(to_write)
 
+                # optional section to print the actual conv filters for nonz_inds
+                print(disc_recon.conv2.get_weights().shape)
+                filter = disc_recon.conv2.get_weights()[0][:,:,0,index]
+                print(filter)
+                input("after filter")
+
             # look at pi in blocks of 6:
             corrected[0] = region_stat
 

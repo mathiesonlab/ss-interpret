@@ -21,7 +21,7 @@ import sys
 
 TICKS = [4.5, 26.5, 51.5, 59.5, 60.5]
 LABELS = ['SFS', 'inter-SNP distances', 'LD', '$\pi$', '#haps']
-MAX_COR = 0.5
+MAX_COR = 0.8
 
 NUM_META_SNPS = 6 # after pooling we have this many "SNPs"
 ALL_STATS = False # if True, plot all stats, otherwise just per-SNP pi
