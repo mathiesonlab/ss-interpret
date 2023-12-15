@@ -213,5 +213,6 @@ if __name__ == "__main__":
             print("input disc", input_file)
             kw = "hidden_pi_"
             output_file = output_folder + kw + saved_model + "_" + pop
-            print("output file", output_file)
-            disc_along_genome(iterator, input_file, output_file)
+            # TODO put back output file in following two lines
+            #print("output file", output_file)
+            disc_along_genome(iterator, input_file)#, output_file)
