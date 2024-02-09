@@ -51,7 +51,7 @@ class OnePopModel(Model):
         assert x.shape[1] == self.pop
 
         print("entering after_perm")
-        print(x.shape, self.conv1.shape)
+        print(x.shape)
         x = self.conv1(x)
         print(x.shape)
         x = self.pool(x) # pool
