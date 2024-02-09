@@ -95,8 +95,6 @@ def disc_along_genome(iterator, input_folder, output_file=None,
 
     disc_recon = discriminator.OnePopModel(iterator.num_samples,
             saved_model=disc)
-    print(disc_recon.trainable_variables)
-    input('enter')
 
     # options for discriminator
     region_len = False

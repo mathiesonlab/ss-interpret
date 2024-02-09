@@ -33,6 +33,8 @@ class OnePopModel(Model):
 
         else:
             self.conv1 = saved_model.conv1
+            print("conv1", self.conv1)
+            input('enter')
             self.conv2 = saved_model.conv2
             self.pool = saved_model.pool
 
