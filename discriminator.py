@@ -33,8 +33,6 @@ class OnePopModel(Model):
 
         else:
             self.conv1 = saved_model.conv1
-            print("conv1", self.conv1)
-            input('enter')
             self.conv2 = saved_model.conv2
             self.pool = saved_model.pool
 
@@ -51,7 +49,11 @@ class OnePopModel(Model):
         """ Note this should mirror call, get data right after
          permutation-invariant function """
         assert x.shape[1] == self.pop
+
+        print("entering after_perm")
+        print(x.shape, self.conv1.shape)
         x = self.conv1(x)
+        print(x.shape)
         x = self.pool(x) # pool
         x = self.conv2(x)
         x = self.pool(x) # pool
