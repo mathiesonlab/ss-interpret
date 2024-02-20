@@ -5,6 +5,7 @@ Date: 2/18/24
 """
 
 import matplotlib.pyplot as plt
+import numpy as np
 import tensorflow as tf
 
 # our imports
@@ -14,12 +15,13 @@ from correlation_heatmap import parse_correlation_file
 #from tensorflow.python.tools.inspect_checkpoint import print_tensors_in_checkpoint_file
 #print_tensors_in_checkpoint_file(file_name=filename,tensor_name="",all_tensors=True)
 
-PATH = "/Users/smathieson/Dropbox/ss-interpret/"
+PATH = "/Users/saramathieson/Dropbox/ss-interpret/"
 HIDDEN_PI = "hidden_pi/hidden_pi_CEU_"
 SUFFIX = "_230410_230830_finetuneAug23"
+NUM_RAND = 5
 
 def main():
-    for seed in range(20):
+    for seed in range(2):
         hidden_pi_file = PATH + HIDDEN_PI + str(seed) + SUFFIX + "_GBR.txt"
         all_hidden, common_indices = parse_correlation_file(hidden_pi_file)
         print(common_indices)
@@ -27,15 +29,29 @@ def main():
         trained_disc += "variables/variables" #.data-00001-of-00002"
 
         print("seed", seed)
-        get_weights(trained_disc, common_indices)
+        
+        # common indices
+        print("useful filters")
+        get_weights(trained_disc, common_indices, title="seed " + str(seed) + " useful filters")
 
-def get_weights(trained_disc, common_indices):
+        # not common indices
+        print("random filters")
+        random_indices = []
+        while len(random_indices) < NUM_RAND:
+            rand = np.random.randint(0, 64)
+            if rand not in common_indices and rand not in random_indices:
+                random_indices.append(rand)
+
+        get_weights(trained_disc, random_indices, title="seed " + str(seed) + " random filters")
+
+def get_weights(trained_disc, common_indices, title=""):
     # this is the source code from above
     # https://gist.github.com/mvsusp/0eff480bf4848fea05689d8af5394d7c
     #reader = pywrap_tensorflow.NewCheckpointReader(filename)
     reader = tf.train.load_checkpoint(trained_disc)
     var_to_shape_map = reader.get_variable_to_shape_map()
     fig1 = plt.figure()
+    plt.title(title)
     num_rows = len(common_indices)
     num_cols = 1
     for key in sorted(var_to_shape_map):
@@ -45,9 +61,26 @@ def get_weights(trained_disc, common_indices):
             #print(weights.shape)
             for (i, idx) in enumerate(common_indices):
                 filter = weights[0,:,:,idx]
-                #print(filter.shape)
+                print("min/max", np.min(filter), np.max(filter))
                 fig1 = plt.subplot(num_rows, num_cols, i+1)
-                plt.imshow(filter, cmap='gray')
+                plt.imshow(filter, cmap='gray', vmin=-0.5, vmax=0.5)
+                
+
+                plt.tick_params(
+                    axis='both',          # changes apply to the x-axis
+                    which='both',      # both major and minor ticks are affected
+                    bottom=False,      # ticks along the bottom edge are off
+                    top=False,         # ticks along the top edge are off
+                    labelbottom=False) # labels along the bottom edge are off
+
+                '''plt.tick_params(
+                    axis='y',          # changes apply to the x-axis
+                    which='both',      # both major and minor ticks are affected
+                    bottom=False,      # ticks along the bottom edge are off
+                    top=False,         # ticks along the top edge are off
+                    labelbottom=False) # labels along the bottom edge are off'''
+                
+                #plt.ylabel("filter: " + str(idx))
     plt.show()
 
 if __name__ == "__main__":
