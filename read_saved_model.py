@@ -15,13 +15,13 @@ from correlation_heatmap import parse_correlation_file
 #from tensorflow.python.tools.inspect_checkpoint import print_tensors_in_checkpoint_file
 #print_tensors_in_checkpoint_file(file_name=filename,tensor_name="",all_tensors=True)
 
-PATH = "/Users/saramathieson/Dropbox/ss-interpret/"
+PATH = "/Users/smathieson/Dropbox/ss-interpret/"
 HIDDEN_PI = "hidden_pi/hidden_pi_CEU_"
 SUFFIX = "_230410_230830_finetuneAug23"
-NUM_RAND = 5
+NUM_RAND = 10
 
 def main():
-    for seed in range(2):
+    for seed in range(4,5):
         hidden_pi_file = PATH + HIDDEN_PI + str(seed) + SUFFIX + "_GBR.txt"
         all_hidden, common_indices = parse_correlation_file(hidden_pi_file)
         print(common_indices)
