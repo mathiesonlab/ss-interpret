@@ -193,3 +193,7 @@ if __name__ == "__main__":
         sample_sizes, global_vars.DEFAULT_SEED, 8.4e-09)
     region = prep_region(ts, False, False)
     print(region.shape)
+
+    # test if 50kb or 36 SNPs is enough for Relate
+    ts = simulation.exp(param_set.ParamSet(simulation.exp), [20],
+        global_vars.DEFAULT_SEED, 1e-8)
