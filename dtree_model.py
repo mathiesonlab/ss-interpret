@@ -58,5 +58,6 @@ def main():
 
     # train model
     dtree_model = train_decision_tree(stats, disc_prob)
+    print(dtree_model.feature_importances_)
 
 main()
