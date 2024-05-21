@@ -49,7 +49,7 @@ def main():
     stats = np.delete(stats, 9, axis=1) # remove first inter-SNP (all zeros)
     print(stats.shape)
 
-    disc_prob = np.load(disc_pred_file)
+    disc_prob = np.loadtxt(disc_pred_file)
     print(disc_prob.shape)
 
     #assert stats.shape[0] == len(disc_pred_file)
