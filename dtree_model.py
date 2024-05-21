@@ -63,6 +63,6 @@ def main():
     print(dtree_model.feature_importances_)
 
     tree.plot_tree(dtree_model)
-    plt.savefig("figs/dtree_model.png")
+    plt.savefig("figs/dtree_model.png") # maybe too big, try to make smaller
 
 main()
