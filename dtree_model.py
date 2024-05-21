@@ -8,7 +8,9 @@ Date: 5/21/24
 
 # TODO right now using MSE, but should change to binary cross-entropy
 
+import matplotlib.pyplot as plt
 import numpy as np
+from sklearn import tree
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
@@ -59,5 +61,8 @@ def main():
     # train model
     dtree_model = train_decision_tree(stats, disc_prob)
     print(dtree_model.feature_importances_)
+
+    tree.plot_tree(dtree_model)
+    plt.savefig("figs/dtree_model.png")
 
 main()
