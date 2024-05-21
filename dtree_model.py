@@ -6,20 +6,22 @@ Author: Sara Mathieson
 Date: 5/21/24
 """
 
+# TODO right now using MSE, but should change to binary cross-entropy
+
 import numpy as np
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 import sys
 
-def train_decision_tree(stats, disc_output):
+def train_decision_tree(stats, disc_prob):
     """
     Train a decision tree model on the stats to predict the output of the
     discriminator
     """
     
     # split data into training and test
-    X_train, X_test, y_train, y_test = train_test_split(stats, disc_output, test_size=0.2)
+    X_train, X_test, y_train, y_test = train_test_split(stats, disc_prob, test_size=0.2)
 
     # train model
     model = DecisionTreeRegressor()
@@ -49,9 +51,12 @@ def main():
     stats = np.delete(stats, 9, axis=1) # remove first inter-SNP (all zeros)
     print(stats.shape)
 
-    disc_prob = np.loadtxt(disc_pred_file)
+    disc_prob = np.loadtxt(disc_pred_file)[:,-1]
     print(disc_prob.shape)
 
-    #assert stats.shape[0] == len(disc_pred_file)
+    assert stats.shape[0] == len(disc_prob)
+
+    # train model
+    dtree_model = train_decision_tree(stats, disc_prob)
 
 main()
