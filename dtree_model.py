@@ -16,6 +16,15 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 import sys
 
+[0,9,44,59,60,61]
+NUM_SFS = 9
+NUM_INTERSNP = 35
+NUM_LD = 15
+SFS_NAMES = ['SFS'+str(i) for i in range(1,NUM_SFS+1)]
+INTER_SNP_NAMES = ['inter-SNP'+str(i) for i in range(1,NUM_INTERSNP+1)]
+LD_NAMES = ['LD'+str(i) for i in range(1,NUM_LD+1)]
+SS_NAMES = SFS_NAMES + INTER_SNP_NAMES + LD_NAMES + ['$\pi$', '#haps']
+
 def train_decision_tree(stats, disc_prob):
     """
     Train a decision tree model on the stats to predict the output of the
@@ -62,7 +71,7 @@ def main():
     dtree_model = train_decision_tree(stats, disc_prob)
     print(dtree_model.feature_importances_)
 
-    tree.plot_tree(dtree_model)
-    plt.savefig("figs/dtree_model.pdf") # maybe too big, try to make smaller
+    tree.plot_tree(dtree_model, feature_names=SS_NAMES, filled=True)
+    plt.savefig("figs/dtree_model.pdf")
 
 main()
