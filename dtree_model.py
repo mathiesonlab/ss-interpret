@@ -26,7 +26,7 @@ def train_decision_tree(stats, disc_prob):
     X_train, X_test, y_train, y_test = train_test_split(stats, disc_prob, test_size=0.2)
 
     # train model
-    model = DecisionTreeRegressor()
+    model = DecisionTreeRegressor(max_depth=3)
     model.fit(X_train, y_train)
 
     # evaluate model
