@@ -16,7 +16,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 import sys
 
-[0,9,44,59,60,61]
 NUM_SFS = 9
 NUM_INTERSNP = 35
 NUM_LD = 15
@@ -35,7 +34,7 @@ def train_decision_tree(stats, disc_prob):
     X_train, X_test, y_train, y_test = train_test_split(stats, disc_prob, test_size=0.2)
 
     # train model
-    model = DecisionTreeRegressor(max_depth=3)
+    model = DecisionTreeRegressor(max_depth=10)
     model.fit(X_train, y_train)
 
     # evaluate model
