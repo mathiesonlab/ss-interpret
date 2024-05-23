@@ -11,7 +11,7 @@ Date: 5/21/24
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn import tree
-from sklearn.tree import DecisionTreeRegressor
+from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 import sys
@@ -34,13 +34,15 @@ def train_decision_tree(stats, disc_prob):
     X_train, X_test, y_train, y_test = train_test_split(stats, disc_prob, test_size=0.2)
 
     # train model
-    model = DecisionTreeRegressor(max_depth=10)
+    #model = DecisionTreeRegressor(max_depth=10)
+    model = DecisionTreeClassifier(max_depth=10)
     model.fit(X_train, y_train)
 
     # evaluate model
     y_pred = model.predict(X_test)
-    mse = mean_squared_error(y_test, y_pred)
-    print("Mean squared error:", mse)
+    print(y_pred[:10])
+    #mse = mean_squared_error(y_test, y_pred)
+    #print("Mean squared error:", mse)
 
     return model
 
