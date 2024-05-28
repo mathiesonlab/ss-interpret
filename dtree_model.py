@@ -1,17 +1,15 @@
 """
 Train decision tree model on the summary stats of *real* data to predict the
-output of the discriminator. Loss function is still binary cross-entropy, but
-not predicting 0/1, but a probability.
+output of the discriminator. Not back-prop so there is no loss function, but
+using regression to predict the probability of selection directly.
 Author: Sara Mathieson
 Date: 5/21/24
 """
 
-# TODO right now using MSE, but should change to binary cross-entropy
-
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn import tree
-from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
+from sklearn.tree import DecisionTreeRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 import sys
@@ -34,15 +32,13 @@ def train_decision_tree(stats, disc_prob):
     X_train, X_test, y_train, y_test = train_test_split(stats, disc_prob, test_size=0.2)
 
     # train model
-    #model = DecisionTreeRegressor(max_depth=10)
-    model = DecisionTreeClassifier(max_depth=10)
+    model = DecisionTreeRegressor(max_depth=10)
     model.fit(X_train, y_train)
 
     # evaluate model
     y_pred = model.predict(X_test)
-    print(y_pred[:10])
-    #mse = mean_squared_error(y_test, y_pred)
-    #print("Mean squared error:", mse)
+    mse = mean_squared_error(y_test, y_pred)
+    print("Mean squared error:", mse)
 
     return model
 
