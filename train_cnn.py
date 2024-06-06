@@ -15,7 +15,7 @@ import sys
 import tensorflow as tf
 
 # our imports
-import discriminator
+#import discriminator
 #import genome_disc
 import global_vars
 from slim_iterator import SlimIterator
@@ -107,7 +107,7 @@ def get_test_batch(neutral_iterator, sel_iterators):
 # FINE-TUNING
 ################################################################################
 
-def fine_tune(disc_filename, loss_filename):#, output_filename=None):
+def fine_tune(disc_filename): #, loss_filename):#, output_filename=None):
     
     # SLiM data
     neutral_iterator = SlimIterator(SLIM_DATA + NEUTRAL)
