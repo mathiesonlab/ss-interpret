@@ -115,9 +115,9 @@ def fine_tune(): #, loss_filename):#, output_filename=None):
 
     # pg-gan trained discriminator
     #disc = tf.saved_model.load(disc_filename)
-    print("num haps", neutral_iterator.sample_size)
+    print("num haps", neutral_iterator.num_samples)
     input('enter')
-    disc = discriminator.OnePopModel(neutral_iterator.sample_size)
+    disc = discriminator.OnePopModel(neutral_iterator.num_samples)
 
     # training params
     cross_entropy =tf.keras.losses.BinaryCrossentropy(from_logits=True)
