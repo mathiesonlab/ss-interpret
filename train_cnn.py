@@ -15,7 +15,7 @@ import sys
 import tensorflow as tf
 
 # our imports
-#import discriminator
+import discriminator
 #import genome_disc
 import global_vars
 from slim_iterator import SlimIterator
@@ -107,14 +107,17 @@ def get_test_batch(neutral_iterator, sel_iterators):
 # FINE-TUNING
 ################################################################################
 
-def fine_tune(disc_filename): #, loss_filename):#, output_filename=None):
+def fine_tune(): #, loss_filename):#, output_filename=None):
     
     # SLiM data
     neutral_iterator = SlimIterator(SLIM_DATA + NEUTRAL)
     sel_iterators = [SlimIterator(SLIM_DATA + sel) for sel in SELECTION]
 
     # pg-gan trained discriminator
-    disc = tf.saved_model.load(disc_filename)
+    #disc = tf.saved_model.load(disc_filename)
+    print("num haps", neutral_iterator.sample_size)
+    input('enter')
+    disc = discriminator.OnePopModel(neutral_iterator.sample_size)
 
     # training params
     cross_entropy =tf.keras.losses.BinaryCrossentropy(from_logits=True)
