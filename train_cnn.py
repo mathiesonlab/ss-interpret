@@ -26,7 +26,7 @@ from slim_iterator import SlimIterator
 ################################################################################
 
 #SEL_TYPE = "Aug23" # change for different types of selection (i.e. Aug23, Over)
-MAIN_PATH = "/homes/smathieson/Documents/pg_gan_interpret/"
+#MAIN_PATH = "/homes/smathieson/Documents/pg_gan_interpret/"
 
 # globals
 TRAIN_POP = sys.argv[1] # ALL for ALL_AI
@@ -37,7 +37,7 @@ SEL_TYPE = sys.argv[2] # change for different types of selection (i.e. Aug23, Ov
 #SEL_EXCEL = MAIN_PATH + "selected_regions/selected_regions.xlsx"
 SLIM_DATA = "/bigdata/smathieson/pg-gan/1000g/SLiM/Aug23/" + TRAIN_POP + "_" + SEL_TYPE + "/"
 
-NONTRAIN_PATH = MAIN_PATH + "discriminators_og/nontrain"
+#NONTRAIN_PATH = MAIN_PATH + "discriminators_og/nontrain"
 #TRAIN_PATH = MAIN_PATH + "discriminators_og/" + TRAIN_POP
 #PRED_PREFIX = MAIN_PATH + "discriminators_og/predictions/prob_"
 
@@ -197,28 +197,4 @@ def fine_tune(): #, loss_filename):#, output_filename=None):
 
 if __name__ == "__main__":
 
-    #disc_folders = sorted(os.listdir(NONTRAIN_PATH))
-
-    #for disc in disc_folders:
-    for seed in range(1):
-
-        # CEU, CHB, YRI
-        disc_filename = NONTRAIN_PATH + "/nontrain_" + str(seed) + "_230821"
-        #loss_filename = MAIN_PATH + "discriminators_og/figures/loss/nontrain_" + str(seed) + "_230821_loss" + str(NUM_BATCH) + ".pdf"
-        
-        # ALL_AI
-        #disc_filename = NONTRAIN_PATH + "/AI_nontrain_" + str(seed) + "_230921"
-        #loss_filename = MAIN_PATH + "discriminators_og/figures/loss/AI_nontrain_" + str(seed) + "_230921_loss" + str(NUM_BATCH) + ".pdf"
-
-        #disc = TRAIN_PATH + "/" + TRAIN_POP + "_" + str(seed) + "_230410"
-
-        #print(disc)
-        # don't finetune agin and don't redo if we already finetuned
-        # TODO change below for differnet types of selection!
-        #if not ("finetune" in disc) and not ((disc + "_finetune" + SEL_TYPE) in disc_folders):
-        #disc_filename = DISC_PATH + "/" + disc
-
-        print()
-        print(disc_filename)
-        #print(loss_filename)
-        fine_tune(disc_filename)#, loss_filename)
+    fine_tune()
