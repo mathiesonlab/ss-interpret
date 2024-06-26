@@ -39,9 +39,9 @@ else:
 ALL_GENES = MAIN_PATH + "selected_regions/refseq.allgene.txt"
 
 if TRAIN_POP == "nontrain":
-    SLIM_DATA = "/bigdata/smathieson/pg-gan/1000g/SLiM/Aug23/CEU_" + SEL_TYPE + "/"
+    SLIM_DATA = "/bigdata/smathieson/1000g-share/SLiM/Aug23/CEU_" + SEL_TYPE + "/"
 else:
-    SLIM_DATA = "/bigdata/smathieson/pg-gan/1000g/SLiM/Aug23/" + TRAIN_POP + "_" + SEL_TYPE + "/"
+    SLIM_DATA = "/bigdata/smathieson/1000g-share/SLiM/Aug23/" + TRAIN_POP + "_" + SEL_TYPE + "/"
 
 if TRAIN_POP == "YRI":
     SLIM_DATA += "n216/"
