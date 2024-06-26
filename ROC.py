@@ -134,7 +134,7 @@ def plot_roc_curve(disc_before, disc_after, output_filename=None):
     print("num test preds", len(test_predictions_after))
     FPR_lst, TPR_lst = util_evals.ROC(test_labels, test_predictions_after)
     auc_sim_after = round(sklearn.metrics.auc(FPR_lst, TPR_lst), 3)
-    plt.plot(FPR_lst, TPR_lst, c=COLOR_SIM, label="SLiM, seed " + seed + ": after, AUC: " + str(auc_sim_after))
+    plt.plot(FPR_lst, TPR_lst, 'o-', c=COLOR_SIM, label="SLiM, seed " + seed + ": after, AUC: " + str(auc_sim_after))
 
     # ROC before (real)
     '''FPR_lst, TPR_lst = util_evals.ROC(real_labels, real_predictions_before)
