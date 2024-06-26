@@ -26,6 +26,10 @@ def confusion_matrix(true, pred, prob_thresh, real=False):
         #if real and prev_true_label == 0 and true_label == 1: # real selected region
         #    start_checking = True
         #if start_checking:
+
+        if true_label == 1: # true selected region
+            print(sigmoid(pred[i]))
+            input('enter')
             
         conf_mat[true_label, pred_label] += 1
 
