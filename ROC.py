@@ -176,7 +176,7 @@ if __name__ == "__main__":
     disc_folders = sorted(os.listdir(DISC_PATH))
 
     for disc in disc_folders:
-        if not ("finetune" in disc) and not ("AI" in disc):
+        if not ("finetune" in disc) and not ("AI" in disc) and "_19_" in disc:
             if TRAIN_POP != "nontrain":
                 finetune = "_230830_finetune"
             else:
@@ -187,7 +187,7 @@ if __name__ == "__main__":
             disc_after  = DISC_PATH + "/" + disc + finetune + SEL_TYPE
             #pred_before = PRED_PREFIX + disc + "_" + TEST_POP + ".txt"
             #pred_after  = PRED_PREFIX + disc + finetune + SEL_TYPE + "_" + TEST_POP + ".txt"
-            output_filename = "slim"+SEL_TYPE+"_"+disc+finetune+TEST_POP+".pdf"
+            output_filename = "figs/slim"+SEL_TYPE+"_"+disc+finetune+TEST_POP+".pdf"
             
             print()
             print(disc_before)
