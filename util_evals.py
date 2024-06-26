@@ -41,11 +41,14 @@ def ROC(labels, predictions):
     # predictions are logits!!
     FPR_lst = []
     TPR_lst = []
+    print("thresholds", np.arange(0,1.1,0.1))
     for prob_thresh in np.arange(0,1.1,0.1):
         x,y = confusion_matrix(labels, predictions, prob_thresh)
         FPR_lst.append(x)
         TPR_lst.append(y)
     
+    print("FPR", FPR_lst)
+    print("TPR", TPR_lst)
     return FPR_lst, TPR_lst
 
 # logit -> prob
