@@ -196,5 +196,5 @@ if __name__ == "__main__":
             #print(pred_after)
             print(output_filename)
             
-            #plot_roc_curve(disc_before, disc_after, output_filename=output_filename)
-            input('enter')
+            plot_roc_curve(disc_before, disc_after, output_filename=output_filename)
+            #input('enter')
