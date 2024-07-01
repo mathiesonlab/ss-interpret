@@ -22,6 +22,7 @@ from slim_iterator import SlimIterator
 import util_evals
 
 MAIN_PATH = "/homes/smathieson/Documents/pg_gan_interpret/"
+SEED = 19
 
 # globals
 TRAIN_POP = sys.argv[1]
@@ -132,7 +133,7 @@ def plot_roc_curve(disc_before, disc_after, output_filename=None):
     # ROC after (SLiM)
     test_predictions_after = disc_after_recon(test_regions, training=False)
     print("num test preds", len(test_predictions_after))
-    FPR_lst, TPR_lst = util_evals.ROC(test_labels, test_predictions_after)
+    FPR_lst, TPR_lst = util_evals.ROC(test_labels, test_predictions_after, regions=test_regions)
     auc_sim_after = round(sklearn.metrics.auc(FPR_lst, TPR_lst), 3)
     plt.plot(FPR_lst, TPR_lst, 'o-', c=COLOR_SIM, label="SLiM, seed " + seed + ": after, AUC: " + str(auc_sim_after))
 
@@ -177,7 +178,7 @@ if __name__ == "__main__":
     disc_folders = sorted(os.listdir(DISC_PATH))
 
     for disc in disc_folders:
-        if not ("finetune" in disc) and not ("AI" in disc) and "_19_" in disc:
+        if not ("finetune" in disc) and not ("AI" in disc) and "_" + str(SEED) + "_" in disc:
             if TRAIN_POP != "nontrain":
                 finetune = "_230830_finetune"
             else:
