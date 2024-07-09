@@ -1,14 +1,13 @@
 # python imports
-#import tensorflow as tf
+import tensorflow as tf
 import time
-import numpy as np
 
 # our imports
 import param_set
 from generator import Generator
 import simulation
 import global_vars
-import ss_helpers
+#import ss_helpers
 
 disc_before = "/Users/smathieson/Dropbox/ss-interpret/trained_discs/CEU/CEU_0_230410"
 disc_after = "/Users/smathieson/Dropbox/ss-interpret/trained_discs/CEU/CEU_0_230410_230830_finetuneAug23"
@@ -24,11 +23,11 @@ print("x", mini_batch.shape)
 #np.save("test_batch.npy", mini_batch)
 
 # get predictions
-'''disc = tf.saved_model.load(disc_before)
+disc = tf.saved_model.load(disc_before)
 start = time.time()
 preds = disc(mini_batch)
 end = time.time()
-print("time in ms", end-start)'''
+print("time in ms", end-start)
 
 # get stats
 #mini_batch = np.load("test_batch.npy")
