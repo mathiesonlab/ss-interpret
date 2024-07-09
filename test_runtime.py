@@ -9,7 +9,7 @@ import simulation
 import global_vars
 #import ss_helpers
 
-disc_before = "/Users/smathieson/Dropbox/ss-interpret/trained_discs/CEU/CEU_0_230410"
+disc_before = "/homes/smathieson/Documents/pg_gan_interpret/discriminators_og/CEU/CEU_0_230410"
 disc_after = "/Users/smathieson/Dropbox/ss-interpret/trained_discs/CEU/CEU_0_230410_230830_finetuneAug23"
 
 # simulate
