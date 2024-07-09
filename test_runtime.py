@@ -4,10 +4,10 @@ import time
 import numpy as np
 
 # our imports
-#import param_set
-#from generator import Generator
-#import simulation
-#import global_vars
+import param_set
+from generator import Generator
+import simulation
+import global_vars
 import ss_helpers
 
 disc_before = "/Users/smathieson/Dropbox/ss-interpret/trained_discs/CEU/CEU_0_230410"
@@ -31,7 +31,7 @@ end = time.time()
 print("time in ms", end-start)'''
 
 # get stats
-mini_batch = np.load("test_batch.npy")
+#mini_batch = np.load("test_batch.npy")
 start = time.time()
 stats = ss_helpers.stats_all(mini_batch)
 end = time.time()
