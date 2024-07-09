@@ -19,7 +19,7 @@ exp_params = param_set.ParamSet(simulation.exp)
 generator = Generator(simulation.exp, ["N1", "T1"], [198],
                         global_vars.DEFAULT_SEED)
 generator.update_params([exp_params.N1.value, exp_params.T1.value])
-mini_batch = generator.simulate_batch(1000)
+mini_batch = generator.simulate_batch(1000, neg1=False)
 print("x", mini_batch.shape)
 #np.save("test_batch.npy", mini_batch)
 
