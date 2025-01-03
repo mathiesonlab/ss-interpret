@@ -58,7 +58,7 @@ def stats_along_genome(iterator, output_file):
 
             # TODO double check "max_dist" in ss_helpers
             #stats = ss_helpers.stats_all(corrected)
-            stats_extra = ss_extra.predict_ihs_max(region)
+            stats_extra = ss_extra.compute_extra_stats(region)
             all_stats.append(stats_extra) # TODO check dims
 
             print(stats_extra)

@@ -4,7 +4,21 @@
 import allel
 import numpy as np
 
-def predict_ihs_max(matrix: np.ndarray) -> float:
+def compute_extra_stats(matrix):
+    data = prep_our_data(matrix)
+    stats = []
+    ihs_max = predict_ihs_max(data)
+    stats.append(ihs_max)
+    return stats
+
+def prep_our_data(matrix):
+    """Convert out data into the right format for functions below"""
+    haplos = matrix[:,:,0]
+    intersnp = matrix[:,:,1][0] # all the same
+    positions = [sum(intersnp[:i]) for i in range(len(intersnp))]
+    return [haplos, positions]
+
+'''def predict_ihs_max(matrix: np.ndarray) -> float:
     """Computes ihs statistic values from genetic data and then returns the maximum abs value of the statistics
 
     Parameters
@@ -32,32 +46,31 @@ def predict_ihs_max(matrix: np.ndarray) -> float:
     h1 = allel.HaplotypeArray(haplos)
     ihs = allel.ihs(h1, pos=positions, include_edges=True)
     output = float(np.nanmax(np.abs(ihs))) # TODO do we need this line?
+    return output'''
+
+def predict_ihs_max(data: List[np.ndarray]) -> float:
+    """Computes ihs statistic values from genetic data and then returns the maximum abs value of the statistics
+
+    Parameters
+    ----------
+    data List[np.ndarray]: [genetic data, genetic positions]
+
+    Returns
+    -------
+    output (float): Returns the statistic of the data
+
+    """
+    if not isinstance(data, list):
+        raise Exception('The ihs test statistic has multiple inputs')
+    genetic_data = data[0][:, :, 0]
+    positions = data[1][:]
+    haplos = np.swapaxes(genetic_data, 0, 1).astype(np.int)
+    h1 = allel.HaplotypeArray(haplos)
+    ihs = allel.ihs(h1, pos=positions, include_edges=True)
+    output = float(np.nanmax(np.abs(ihs)))
     return output
 
 '''
-@staticmethod
-    def _predict_ihs_max(data: List[np.ndarray]) -> float:
-        """Computes ihs statistic values from genetic data and then returns the maximum abs value of the statistics
-
-        Parameters
-        ----------
-        data List[np.ndarray]: [genetic data, genetic positions]
-
-        Returns
-        -------
-        output (float): Returns the statistic of the data
-
-        """
-        if not isinstance(data, list):
-            raise Exception('The ihs test statistic has multiple inputs')
-        genetic_data = data[0][:, :, 0]
-        positions = data[1][:]
-        haplos = np.swapaxes(genetic_data, 0, 1).astype(np.int)
-        h1 = allel.HaplotypeArray(haplos)
-        ihs = allel.ihs(h1, pos=positions, include_edges=True)
-        output = float(np.nanmax(np.abs(ihs)))
-        return output
-
     @staticmethod
     def _predict_td(data: List[np.ndarray]) -> float:
         """Computes tajima d test statistic of genetic data
