@@ -61,7 +61,7 @@ def stats_along_genome(iterator, output_file):
             stats_extra = ss_extra.predict_ihs_max(region)
             all_stats.append(stats_extra) # TODO check dims
 
-            print(stats[0])
+            print(stats_extra)
             input('enter')
 
         num_total += 1
