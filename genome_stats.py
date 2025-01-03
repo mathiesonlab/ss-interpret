@@ -53,12 +53,12 @@ def stats_along_genome(iterator, output_file):
 
         # compute summary stats
         if region is not None:
-            corrected = np.zeros((1, iterator.num_samples, NUM_SNPS, 2))
-            corrected[0] = region
+            #corrected = np.zeros((1, iterator.num_samples, NUM_SNPS, 2))
+            #corrected[0] = region
 
             # TODO double check "max_dist" in ss_helpers
             #stats = ss_helpers.stats_all(corrected)
-            stats_extra = ss_extra.predict_ihs_max(corrected)
+            stats_extra = ss_extra.predict_ihs_max(region)
             all_stats.append(stats_extra) # TODO check dims
 
             print(stats[0])

@@ -18,6 +18,9 @@ def predict_ihs_max(matrix: np.ndarray) -> float:
     positions = [sum(intersnp[:i]) for i in range(len(intersnp))]
     #assert len(positions) == len(intersnp)
 
+    print("haplos", haplos) 
+    print("positions", positions)
+
     #if not isinstance(data, list):
     #    raise Exception('The ihs test statistic has multiple inputs')
     #genetic_data = data[0][:, :, 0]
