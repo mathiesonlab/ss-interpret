@@ -163,7 +163,7 @@ def predict_garud_h2_h1(data: List[np.ndarray]) -> float:
     _, _, _, h2_h1 = allel.garud_h(h1)
     return -h2_h1  # Make negative to flip sides of classification threshold
 
-def predict_n_columns(self, data: List[np.ndarray]) -> float:
+def predict_n_columns(data: List[np.ndarray]) -> float:
     """Computes statistic based on number of columns in image
 
     Parameters
