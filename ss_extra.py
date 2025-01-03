@@ -1,3 +1,6 @@
+# based on code by Ryan M. Cecil:
+# https://github.com/ryanmcecil/popgen_ml_sweep_detection/blob/master/models/popgen_summary_statistics.py
+
 import allel
 import numpy as np
 
@@ -13,7 +16,7 @@ def predict_ihs_max(matrix: np.ndarray) -> float:
     output (float): Returns the statistic of the data
 
     """
-    haplos = matrix[:,:,0].transpose()
+    haplos = matrix[:,:,0].transpose().astype(np.int)
     intersnp = matrix[:,:,1][0] # all the same
     positions = [sum(intersnp[:i]) for i in range(len(intersnp))]
     #assert len(positions) == len(intersnp)
