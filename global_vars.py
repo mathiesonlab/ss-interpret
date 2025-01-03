@@ -100,7 +100,7 @@ def get_reco_files(reco_folder):
 Likewise, overwrite for parsing for your datafile
 '''
 def parse_chrom(chrom_str):
-    return chrom_str # hg19 option
+    return chrom_str.decode("utf-8") # hg19 option
 
     # for hg38, comment out the above line and uncomment the line below:
     # return chrom_str[3:]
