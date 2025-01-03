@@ -14,7 +14,7 @@ def compute_extra_stats(matrix):
 
 def prep_our_data(matrix):
     """Convert out data into the right format for functions below"""
-    haplos = matrix[:,:,0]
+    haplos = np.expand_dims(matrix[:,:,0], axis=-1)
     intersnp = matrix[:,:,1][0] # all the same
     positions = [sum(intersnp[:i]) for i in range(len(intersnp))]
     return [haplos, positions]
