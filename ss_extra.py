@@ -5,7 +5,7 @@ import allel
 import numpy as np
 from typing import List
 
-EXTRA_STATS = ['ihs_maxabs', 'tajima_d', 'garud_h1', 'garud_h12', 'garud_h2_h1', 'n_columns']
+EXTRA_STATS = ['ihs_maxabs', 'tajima_d', 'garud_h1', 'garud_h12', 'garud_h123', 'garud_h2_h1']
 
 def compute_extra_stats(matrix):
     # convert our data into their format
@@ -16,10 +16,11 @@ def compute_extra_stats(matrix):
     tajima_d = predict_td(data)
     garud_h1 = predict_garud_h1(data)
     garud_h12 = predict_garud_h12(data)
+    garud_h123 = predict_garud_h123(data)
     garud_h2_h1 = predict_garud_h2_h1(data)
-    n_columns = predict_n_columns(data)
+    #n_columns = predict_n_columns(data) all the same for us
 
-    stats = [ihs_maxabs, tajima_d, garud_h1, garud_h12, garud_h2_h1, n_columns]
+    stats = [ihs_maxabs, tajima_d, garud_h1, garud_h12, garud_h123, garud_h2_h1]
     return stats
 
 def prep_our_data(matrix):
@@ -161,7 +162,8 @@ def predict_garud_h2_h1(data: List[np.ndarray]) -> float:
     haplos = np.swapaxes(genetic_data, 0, 1).astype(np.int)
     h1 = allel.HaplotypeArray(haplos)
     _, _, _, h2_h1 = allel.garud_h(h1)
-    return -h2_h1  # Make negative to flip sides of classification threshold
+    return h2_h1 # SM: removed negative sign
+    # Make negative to flip sides of classification threshold
 
 def predict_n_columns(data: List[np.ndarray]) -> float:
     """Computes statistic based on number of columns in image
@@ -177,7 +179,7 @@ def predict_n_columns(data: List[np.ndarray]) -> float:
 
     """
     genetic_data = data[0][:, :, 0]
-    return -genetic_data.shape[1]
+    return genetic_data.shape[1] # SM: removed negative sign
 
 '''
 class StandardizedStatistic:

@@ -61,8 +61,8 @@ def stats_along_genome(iterator, output_file):
             stats_extra = ss_extra.compute_extra_stats(region)
             all_stats.append(stats_extra) # TODO check dims
 
-            print(stats_extra)
-            input('enter')
+            #print(stats_extra)
+            #input('enter')
 
         num_total += 1
 
