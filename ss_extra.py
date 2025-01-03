@@ -3,6 +3,7 @@
 
 import allel
 import numpy as np
+from typing import List
 
 def compute_extra_stats(matrix):
     data = prep_our_data(matrix)
