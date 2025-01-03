@@ -12,7 +12,8 @@ import sys
 # our imports
 import global_vars
 import real_data_random
-import ss_helpers
+#import ss_helpers
+import ss_extra
 
 # globals
 #NUM_REGIONS = 100000
@@ -56,8 +57,9 @@ def stats_along_genome(iterator, output_file):
             corrected[0] = region
 
             # TODO double check "max_dist" in ss_helpers
-            stats = ss_helpers.stats_all(corrected)
-            all_stats.append(stats[0])
+            #stats = ss_helpers.stats_all(corrected)
+            stats_extra = ss_extra.predict_ihs_max(corrected)
+            all_stats.append(stats_extra) # TODO check dims
 
             print(stats[0])
             input('enter')
