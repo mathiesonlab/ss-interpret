@@ -1,6 +1,6 @@
 # python imports
 import numpy as np
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import Lasso, LinearRegression
 from sklearn import tree
 from sklearn.metrics import mean_squared_error, log_loss, accuracy_score, r2_score
 from sklearn.naive_bayes import GaussianNB
@@ -102,16 +102,17 @@ def train_test_split(X, y):
     viz.linear_reg_visual(coef_lst, output_file)        
     return coef_lst'''
 
-def dtree_reg(X_train, y_train, X_test, y_test, output_file):
+def generic_regression(X_train, y_train, X_test, y_test, output_file, model):
     mse_train = []
     mse_test = []
-    dtree_lst = []
+    model_lst = []
     depth_lst = [9] #[1,3,5,7,9,11,13,15]#i + 1 for i in range(10)]
     for depth in depth_lst:
-        dtree = tree.DecisionTreeRegressor(max_depth = depth).fit(X_train, y_train)
-        dtree_lst.append(dtree)
-        pred_y_train = dtree.predict(X_train)
-        pred_y_test = dtree.predict(X_test)
+        #model = tree.DecisionTreeRegressor(max_depth = depth).fit(X_train, y_train)
+        model = Lasso().fit(X_train, y_train)
+        dtree_lst.append(model)
+        pred_y_train = model.predict(X_train)
+        pred_y_test = model.predict(X_test)
         mse_train.append(mean_squared_error(y_train, pred_y_train))
         mse_test.append(mean_squared_error(y_test, pred_y_test))
 

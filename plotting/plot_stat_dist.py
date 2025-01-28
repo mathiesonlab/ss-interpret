@@ -3,7 +3,6 @@ import numpy as np
 import seaborn as sns
 import sys
 
-# TODO find out names of stats!
 EXTRA_STATS = ['ihs_maxabs', "Tajima's D", 'garud_h1', 'garud_h12', 'garud_h123', 'garud_h2_h1']
 MAX_VALUE = 1000
 
