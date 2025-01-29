@@ -28,7 +28,7 @@ def main():
     #samples_filename = "/homes/smathieson/GIT/ss-interpret/figs/stats.npy"
     #test_samples = np.load(samples_filename)
 
-    X = np.load(PATH + "summary_stats/stats_" + TEST + "_all.npy")  
+    X = np.load(PATH + "summary_stats/stats_" + TEST + "_all.npy")
     for i in range(20):
         print("----------------")
         print(f"SEED {i}")
@@ -45,9 +45,9 @@ def main():
         #print("Linear Regression results --")
         #linear_regression(X_train, y_train,  X_test, y_test, f'{output_dir}/lr_bar_chart_before.pdf')
         #naive_bayes(X, y)
-        print("Decision Tree results --")
-        dtree = dtree_reg(X_train, y_train,  X_test, y_test, f'{output_dir}/tree_importance_before.pdf')
-        viz.dtree_plotting(dtree, f'{output_dir}/tree_before.pdf')
+        print("Model results --")
+        before_model = generic_regression(X_train, y_train,  X_test, y_test, f'{output_dir}/tree_importance_before.pdf')
+        #viz.dtree_plotting(dtree, f'{output_dir}/tree_before.pdf')
         #print("Random Forest results --")
         #random_forest(X_train, y_train,  X_test, y_test, f'{output_dir}/rf_importance_before.pdf')
         
@@ -59,18 +59,19 @@ def main():
         X_train, y_train,  X_test, y_test = train_test_split(X, y)
         #print("\nLinear Regression results --")
         #linear_regression(X_train, y_train,  X_test, y_test, f'{output_dir}/lr_bar_chart_after.pdf')
-        print("Decision Tree results --")
-        dtree = dtree_reg(X_train, y_train,  X_test, y_test, f'{output_dir}/tree_importance_after.pdf')
+        print("Model results --")
+        after_model = generic_regression(X_train, y_train,  X_test, y_test, f'{output_dir}/tree_importance_after.pdf')
         #decision_paths = dtree.decision_path(test_samples)
         #leaf_id = dtree.apply(test_samples)
         #print_path(decision_paths, leaf_id, test_samples, dtree)
         #print(decision_paths)
         #input('enter')
-        viz.dtree_plotting(dtree, f'{output_dir}/tree_after.pdf')
+        #viz.dtree_plotting(dtree, f'{output_dir}/tree_after.pdf')
         #print("Random Forest results --")
         #random_forest(X_train, y_train,  X_test, y_test, f'{output_dir}/rf_importance_after.pdf')
 
-def read_prob_file (filename):
+def read_prob_file(filename):
+    # TODO change to numpy loadtxt
     y = []
     with open (PATH + f'predictions/{filename}', 'r') as file:
         lines = file.readlines()
@@ -102,37 +103,37 @@ def train_test_split(X, y):
     viz.linear_reg_visual(coef_lst, output_file)        
     return coef_lst'''
 
-def generic_regression(X_train, y_train, X_test, y_test, output_file, model):
-    mse_train = []
-    mse_test = []
-    model_lst = []
-    depth_lst = [9] #[1,3,5,7,9,11,13,15]#i + 1 for i in range(10)]
-    for depth in depth_lst:
+def generic_regression(X_train, y_train, X_test, y_test, output_file):
+    #mse_train = []
+    #mse_test = []
+    #model_lst = []
+    #depth_lst = [9] #[1,3,5,7,9,11,13,15]#i + 1 for i in range(10)]
+    #for depth in depth_lst:
         #model = tree.DecisionTreeRegressor(max_depth = depth).fit(X_train, y_train)
-        model = Lasso().fit(X_train, y_train)
-        dtree_lst.append(model)
-        pred_y_train = model.predict(X_train)
-        pred_y_test = model.predict(X_test)
-        mse_train.append(mean_squared_error(y_train, pred_y_train))
-        mse_test.append(mean_squared_error(y_test, pred_y_test))
+    model = Lasso().fit(X_train, y_train)
+    #dtree_lst.append(model)
+    pred_y_train = model.predict(X_train)
+    pred_y_test = model.predict(X_test)
+    mse_train = mean_squared_error(y_train, pred_y_train)
+    mse_test = mean_squared_error(y_test, pred_y_test)
 
-        # r^2
-        r2_test = r2_score(y_test, pred_y_test)
-        print("r2", r2_test, "depth", depth)
-        plt.clf()
-        plt.scatter(y_test, pred_y_test, s=5, color="cornflowerblue")
-        plt.plot(np.unique(y_test), np.poly1d(np.polyfit(y_test, pred_y_test, 1))(np.unique(y_test)), color="darkorange")
-        plt.axis([0.47,0.95,0.47,0.95])
-        plt.title(f"$r^2$: {round(r2_test,3)}, Decision tree depth: {depth}", fontsize=20)
-        plt.xlabel("CNN prediction", fontsize=16)
-        plt.ylabel("Decision Tree prediction", fontsize=16)
-        plt.show()
+    # r^2
+    r2_test = r2_score(y_test, pred_y_test)
+    print("r2", r2_test, "depth", depth)
+    plt.clf()
+    plt.scatter(y_test, pred_y_test, s=5, color="cornflowerblue")
+    plt.plot(np.unique(y_test), np.poly1d(np.polyfit(y_test, pred_y_test, 1))(np.unique(y_test)), color="darkorange")
+    plt.axis([0.47,0.95,0.47,0.95])
+    plt.title(f"$r^2$: {round(r2_test,3)}, Decision tree depth: {depth}", fontsize=20)
+    plt.xlabel("CNN prediction", fontsize=16)
+    plt.ylabel("Decision Tree prediction", fontsize=16)
+    plt.show()
 
-    idx = 0 #np.argmin(mse_test) TODO put back, just using depth 3 for viz or 9 for final
-    min_depth = depth_lst[idx]# + 1
+    #idx = 0 #np.argmin(mse_test) TODO put back, just using depth 3 for viz or 9 for final
+    #min_depth = depth_lst[idx]# + 1
     print(f"Min test mse: {np.min(mse_test)}; Depth: {min_depth}")
     print(f"Corresponding train mse: {mse_train[idx]}")
-    weights = dtree_lst[idx].feature_importances_
+    #weights = dtree_lst[idx].feature_importances_
     #viz.dtree_importance(weights, output_file)
     return dtree_lst[idx]
 
