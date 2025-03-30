@@ -18,7 +18,7 @@ import os
 import visualization as viz
 
 # smathieson or saramathieson
-PATH = "/Users/saramathieson/Dropbox/ss-interpret/"
+PATH = "/Users/smathieson/Dropbox/ss-interpret/"
 #PATH = "/homes/smathieson/Documents/pg_gan_interpret/discriminators_og/"
 TRAIN = "CEU" # "YRI" #"CHB" # "CEU" or nontrain
 TEST = "GBR" # "ESN" #"CHS" #"GBR"
@@ -26,10 +26,12 @@ TEST = "GBR" # "ESN" #"CHS" #"GBR"
 def main():
 
     lin_model = LinearRegression()
-    lasso_model = Lasso()
+    #lasso_model = Lasso()
     dtree = tree.DecisionTreeRegressor(max_depth=9)
+    rf = RandomForestRegressor(n_estimators=10, max_depth=7)
 
-    model_lst = [lin_model, lasso_model, dtree]
+    model_lst = [lin_model, dtree, rf]
+    model_names = ["linear regression", "dtree, depth=9", "rf, depth=7"]
 
     # samples with high pred of selection (from the CNN)
     #samples_filename = "/homes/smathieson/GIT/ss-interpret/figs/stats.npy"
@@ -54,7 +56,8 @@ def main():
         #naive_bayes(X, y)
         print("Model results --")
         out_file = f'{output_dir}/tree_importance_before.pdf'
-        for model in model_lst:
+        for i, model in enumerate(model_lst):
+            print(model_names[i])
             before_model = generic_regression(X_train, y_train,  X_test, y_test, model)
         #viz.dtree_plotting(dtree, f'{output_dir}/tree_before.pdf')
         #print("Random Forest results --")
@@ -269,14 +272,5 @@ def random_forest(X_train, y_train, X_test, y_test, output_file):
     rf_best = grid_search.best_estimator_
     print(grid_search.best_score_)
     print(rf_best)'''
-
-
-feature_lst = ['SFS0', 'SFS1', 'SFS2', 'SFS3', 'SFS4', 'SFS5', 'SFS6', 'SFS7', 'SFS8', 'SFS9', 'inter-SNP0', 'inter-SNP1', \
-            'inter-SNP2', 'inter-SNP3', 'inter-SNP4', 'inter-SNP5', 'inter-SNP6', 'inter-SNP7', 'inter-SNP8', \
-            'inter-SNP9', 'inter-SNP10', 'inter-SNP11', 'inter-SNP12', 'inter-SNP13', 'inter-SNP14', 'inter-SNP15',\
-            'inter-SNP16', 'inter-SNP17', 'inter-SNP18', 'inter-SNP19', 'inter-SNP20', 'inter-SNP21', 'inter-SNP22', \
-            'inter-SNP23', 'inter-SNP24', 'inter-SNP25', 'inter-SNP26', 'inter-SNP27', 'inter-SNP28', 'inter-SNP29', \
-            'inter-SNP30', 'inter-SNP31', 'inter-SNP32', 'inter-SNP33', 'inter-SNP34', 'inter-SNP35', 'LD1', 'LD2', 'LD3',\
-             'LD4', 'LD5', 'LD6', 'LD7', 'LD8', 'LD9', 'LD10', 'LD11', 'LD12', 'LD13', 'LD14', 'LD15', '$\\pi$', '#haps']
 
 main()
