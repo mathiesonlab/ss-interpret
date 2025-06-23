@@ -42,7 +42,8 @@ def get_pop(h5_filename):
 def disc_along_genome(iterator, input_folder, output_file, fine_tune_disc=None):
 
     if fine_tune_disc is None:
-        disc = tf.saved_model.load(input_folder)
+        #disc = tf.saved_model.load(input_folder)
+        disc = tf.keras.models.load_model(input_folder)
     else:
         disc = fine_tune_disc
 
