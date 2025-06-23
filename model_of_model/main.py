@@ -62,7 +62,7 @@ def main():
         #viz.dtree_plotting(dtree, f'{output_dir}/tree_before.pdf')
         #print("Random Forest results --")
         #random_forest(X_train, y_train,  X_test, y_test, f'{output_dir}/rf_importance_before.pdf')
-        input('enter')
+        #input('enter')
         
         print("After Fine Tune")
         num = "230410_230830"
@@ -84,7 +84,7 @@ def main():
         #viz.dtree_plotting(dtree, f'{output_dir}/tree_after.pdf')
         #print("Random Forest results --")
         #random_forest(X_train, y_train,  X_test, y_test, f'{output_dir}/rf_importance_after.pdf')
-        input('enter')
+        #input('enter')
 
 def read_prob_file(filename):
     # TODO change to numpy loadtxt
