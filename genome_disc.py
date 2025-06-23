@@ -46,6 +46,7 @@ def disc_along_genome(iterator, input_folder, output_file, fine_tune_disc=None):
     else:
         disc = fine_tune_disc
 
+    print("sample size", iterator.num_samples)
     disc_recon = discriminator.OnePopModel(iterator.num_samples,
             saved_model=disc)
 

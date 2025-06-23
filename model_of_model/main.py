@@ -20,8 +20,8 @@ import visualization as viz
 # smathieson or saramathieson
 PATH = "/Users/smathieson/Dropbox/ss-interpret/"
 #PATH = "/homes/smathieson/Documents/pg_gan_interpret/discriminators_og/"
-TRAIN = "CEU" # "YRI" #"CHB" # "CEU" or nontrain
-TEST = "GBR" # "ESN" #"CHS" #"GBR"
+TRAIN = "CHB" # "YRI" #"CHB" # "CEU" or nontrain
+TEST = "CHS" # "ESN" #"CHS" #"GBR"
 
 def main():
 
