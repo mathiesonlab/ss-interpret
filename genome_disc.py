@@ -90,6 +90,7 @@ def disc_along_genome(iterator, input_folder, output_file, fine_tune_disc=None):
 
             else:
                 #pred = disc(corrected, training=False).numpy()
+                print("pred", disc_recon(corrected, training=False))
                 pred_recon = disc_recon(corrected, training=False).numpy()
                 #prob = get_prob(pred)
                 all_logits.append(pred_recon)
