@@ -43,7 +43,8 @@ def disc_along_genome(iterator, input_folder, output_file, fine_tune_disc=None):
 
     if fine_tune_disc is None:
         #disc = tf.saved_model.load(input_folder)
-        disc = tf.keras.models.load_model(input_folder)
+        #disc = tf.keras.models.load_model(input_folder)
+        disc = tf.keras.layers.TFSMLayer(input_folder, call_endpoint='serving_default')
     else:
         disc = fine_tune_disc
 
