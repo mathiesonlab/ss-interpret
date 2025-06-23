@@ -18,7 +18,7 @@ import global_vars
 import real_data_random
 
 # globals
-#NUM_REGIONS = 1000
+NUM_REGIONS = 1000
 #SEL_TYPE = "AI" # change for different types of selection (i.e. Aug23, Over1, Over2, AI)
 NUM_SNPS = global_vars.NUM_SNPS
 HIDDEN = False # if True, compute last hidden layer, o.w. compute probability
@@ -64,7 +64,7 @@ def disc_along_genome(iterator, input_folder, output_file, fine_tune_disc=None):
     # go through entire genome
     final_end = iterator.num_snps-NUM_SNPS
     num_total = 0
-    #final_end = NUM_REGIONS*NUM_SNPS # fewer for testing
+    final_end = NUM_REGIONS*NUM_SNPS # fewer for testing
     for start_idx in range(0, final_end, NUM_SNPS):
         curr_chrom = iterator.chrom_all[start_idx]
         if curr_chrom != prev_chrom:
@@ -90,8 +90,8 @@ def disc_along_genome(iterator, input_folder, output_file, fine_tune_disc=None):
 
             else:
                 #pred = disc(corrected, training=False).numpy()
-                print("pred", disc_recon(corrected, training=False)['output_1'].numpy())
-                pred_recon = disc_recon(corrected, training=False)['output_1'].numpy()
+                #print("pred", disc_recon(corrected, training=False)['output_1'].numpy())
+                pred_recon = disc_recon(corrected, training=False)['output_1'].numpy()[0][0]
                 #prob = get_prob(pred)
                 all_logits.append(pred_recon)
                 #print("logit", pred_recon)
