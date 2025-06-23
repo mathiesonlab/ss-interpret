@@ -17,7 +17,7 @@ class OnePopModel(Model):
     def __init__(self, pop, saved_model=None):
         super(OnePopModel, self).__init__()
 
-        if saved_model is None:
+        '''if saved_model is None:
             # it is (1,5) for permutation invariance (shape is n X SNPs)
             self.conv1 = Conv2D(32, (1, 5), activation='relu')
             self.conv2 = Conv2D(64, (1, 5), activation='relu')
@@ -41,7 +41,34 @@ class OnePopModel(Model):
 
             self.fc1 = saved_model.fc1
             self.fc2 = saved_model.fc2
-            self.dense3 = saved_model.dense3
+            self.dense3 = saved_model.dense3'''
+
+        #if saved_model is None:
+        # it is (1,5) for permutation invariance (shape is n X SNPs)
+        self.conv1 = Conv2D(32, (1, 5), activation='relu')
+        self.conv2 = Conv2D(64, (1, 5), activation='relu')
+        self.pool = MaxPooling2D(pool_size = (1,2), strides = (1,2))
+
+        self.flatten = Flatten()
+        self.dropout = Dropout(rate=0.5)
+
+        # change from 128,128 to 32,32,16 (same # params)
+        self.fc1 = Dense(128, activation='relu')
+        self.fc2 = Dense(128, activation='relu')
+        self.dense3 = Dense(1)#2, activation='softmax') # two classes
+
+        if saved_model:
+            print("loading weights")
+            self.conv1.set_weights(saved_model.conv1)
+            self.conv2.set_weights(saved_model.conv2)
+            #self.pool = saved_model.pool
+
+            #self.flatten = saved_model.flatten
+            #self.dropout = saved_model.dropout
+
+            self.fc1.set_weights(saved_model.fc1)
+            self.fc2.set_weights(saved_model.fc2)
+            self.dense3.set_weights(saved_model.dense3)
 
         self.pop = pop
 
