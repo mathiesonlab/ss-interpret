@@ -1,6 +1,5 @@
 TRAIN_POP=${1}  # first command line arg (i.e. CEU)
 TEST_POP=${2} # second command line arg (i.e. GBR)
-SEL_TYPE=${3} # AI, Aug23, Over, Over2
 DISC="discriminators_og/arch"
 DATE="250331"
 
