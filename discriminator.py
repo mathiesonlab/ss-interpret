@@ -114,6 +114,7 @@ class OnePopModel(Model):
 
     @classmethod
     def from_config(cls, config):
+        print(config)
         pop = config.pop("pop")
         #pop = keras.saving.deserialize_keras_object(sublayer_config)
         return cls(pop, **config)
