@@ -107,6 +107,11 @@ class OnePopModel(Model):
 
         _ = self.call(gt_inputs)
 
+    def get_config(self):
+        config = super().get_config()
+        config.update({"pop": self.pop})
+        return config
+
 class TwoPopModel(Model):
     """Two population model"""
 
