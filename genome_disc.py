@@ -44,9 +44,9 @@ def disc_along_genome(iterator, input_folder, output_file, fine_tune_disc=None):
     if fine_tune_disc is None:
         #disc = tf.saved_model.load(input_folder)
         # new way of loading for later versions of tensorflow
-        disc = tf.keras.layers.TFSMLayer(input_folder, call_endpoint='serving_default')
+        #disc = tf.keras.layers.TFSMLayer(input_folder, call_endpoint='serving_default')
         # for .keras models
-        #disc = tf.keras.models.load_model(input_folder) # is a file in this case
+        disc = tf.keras.models.load_model(input_folder, custom_objects={"OnePopModel": discriminator.OnePopModel}) # input_folder is a file in this case
     else:
         disc = fine_tune_disc
 
