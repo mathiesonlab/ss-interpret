@@ -112,6 +112,12 @@ class OnePopModel(Model):
         config.update({"pop": self.pop})
         return config
 
+    @classmethod
+    def from_config(cls, config):
+        pop = config.pop("pop")
+        #pop = keras.saving.deserialize_keras_object(sublayer_config)
+        return cls(pop, **config)
+
 class TwoPopModel(Model):
     """Two population model"""
 
