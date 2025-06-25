@@ -121,10 +121,11 @@ class OnePopModel(Model):
 
     @classmethod
     def from_config(cls, config):
-        print(config)
         if "pop" in config:
+            print("yes")
             pop = config.pop("pop")
         else:
+            print("no")
             pop = 210
         #pop = keras.saving.deserialize_keras_object(sublayer_config)
         return cls(pop, **config)

@@ -9,7 +9,7 @@ import discriminator
 
 SAVED_MODEL = "test_model.keras"
 disc = discriminator.OnePopModel(10)
-corrected = np.zeros((1, 20, 36, 2), dtype=np.float32)
+corrected = np.random((1, 20, 36, 2), dtype=np.float32)
 pred_before = disc(corrected)
 print("pred before", pred_before)
 disc.save(SAVED_MODEL)
