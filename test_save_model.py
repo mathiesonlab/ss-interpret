@@ -8,7 +8,7 @@ import tensorflow as tf
 import discriminator
 
 SAVED_MODEL = "test_model.keras"
-disc = discriminator.OnePopModel(10)
+disc = discriminator.OnePopModel(20)
 corrected = np.random.rand(1, 20, 36, 2)#, dtype=np.float32)
 print(corrected.shape)
 pred_before = disc(corrected)
