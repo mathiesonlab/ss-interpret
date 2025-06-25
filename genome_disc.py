@@ -151,7 +151,7 @@ if __name__ == "__main__":
     for i in [20]:
         #print(disc_folders)
         if not HIDDEN: # only do hidden for fine-tune
-            saved_model = disc_folders[0][:3] + "_" + str(i) + "_" + date + ".keras" # TODO toggle .keras
+            saved_model = disc_folders[0][:3] + "_" + str(i) + "_" + date + ".h5" # TODO toggle .keras
             if saved_model in disc_folders: # already trained
                 input_file = input_folder + saved_model
                 print("input disc", input_file)
