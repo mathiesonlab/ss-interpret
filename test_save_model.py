@@ -2,14 +2,10 @@
 
 # python imports
 import numpy as np
-import sys
 import tensorflow as tf
 
 # our imports
-sys.path.insert(1, "../")
 import discriminator
-
-
 
 SAVED_MODEL = "test_model.keras"
 disc = discriminator.OnePopModel(10)
