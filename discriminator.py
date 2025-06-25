@@ -54,6 +54,7 @@ class OnePopModel(Model):
 
     def last_hidden_layer(self, x):
         """ Note this should mirror call """
+        print(x.shape[1],self.pop)
         assert x.shape[1] == self.pop
         x = self.conv1(x)
         x = self.pool(x) # pool
