@@ -107,27 +107,14 @@ class OnePopModel(Model):
 
         _ = self.call(gt_inputs)
 
-    '''def get_config(self):
-        config = super().get_config()
-        config.update({"pop": self.pop})
-        return config'''
-
     def get_config(self):
         base_config = super().get_config()
-        config = {
-            "pop": self.pop,
-        }
+        config = {"pop": self.pop}
         return {**base_config, **config}
 
     @classmethod
     def from_config(cls, config):
-        if "pop" in config:
-            print("yes")
-            pop = config.pop("pop")
-        else:
-            print("no")
-            pop = 210
-        #pop = keras.saving.deserialize_keras_object(sublayer_config)
+        pop = config.pop("pop")
         return cls(pop, **config)
 
 class TwoPopModel(Model):
