@@ -115,7 +115,7 @@ class OnePopModel(Model):
 
     @classmethod
     def from_config(cls, config):
-        pop = config.pop("pop")
+        pop = 40 # config.pop("pop")
         return cls(pop, **config)
 
 class TwoPopModel(Model):
