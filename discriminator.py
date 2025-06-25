@@ -76,7 +76,7 @@ class OnePopModel(Model):
 
     def call(self, x, training=None):
         """x is the genotype matrix + distances"""
-        #assert x.shape[1] == self.pop
+        assert x.shape[1] == self.pop
         x = self.conv1(x)
         x = self.pool(x) # pool
         x = self.conv2(x)
