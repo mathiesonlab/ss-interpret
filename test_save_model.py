@@ -8,14 +8,14 @@ import tensorflow as tf
 import discriminator
 
 SAVED_MODEL = "test_model.keras"
-disc = discriminator.OnePopModel(20)
+disc = discriminator.OnePopModel()#20)
 corrected = np.random.rand(1, 20, 36, 2)#, dtype=np.float32)
 print(corrected.shape)
 pred_before = disc(corrected)
 print("pred before", pred_before)
 disc.save(SAVED_MODEL)
 
-disc = tf.keras.models.load_model(SAVED_MODEL, custom_objects={"OnePopModel": discriminator.OnePopModel, "pop": 200}) # input_folder is a file in this case
+disc = tf.keras.models.load_model(SAVED_MODEL, custom_objects={"OnePopModel": discriminator.OnePopModel}) # input_folder is a file in this case
 
 #corrected = np.zeros((1, 20, 36, 2), dtype=np.float32)
 new_pop = np.random.rand(1, 40, 36, 2)#, dtype=np.float32)

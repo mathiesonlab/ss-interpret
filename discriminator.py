@@ -15,7 +15,7 @@ class OnePopModel(Model):
     """Single population model - based on defiNETti software."""
 
     # SM: 6/24/25 removing saved_model option since it can be loaded directly
-    def __init__(self, pop, **kwargs):
+    def __init__(self, **kwargs):
         super(OnePopModel, self).__init__(**kwargs)
 
         # it is (1,5) for permutation invariance (shape is n X SNPs)
@@ -31,7 +31,7 @@ class OnePopModel(Model):
         self.fc2 = Dense(128, activation='relu')
         self.dense3 = Dense(1)#2, activation='softmax') # two classes
 
-        self.pop = pop
+        #self.pop = pop
 
     def after_perm(self, x):
         """ Note this should mirror call, get data right after
@@ -76,8 +76,8 @@ class OnePopModel(Model):
 
     def call(self, x, training=None):
         """x is the genotype matrix + distances"""
-        print(x.shape[1],self.pop)
-        assert x.shape[1] == self.pop
+        #print(x.shape[1],self.pop)
+        #assert x.shape[1] == self.pop
         x = self.conv1(x)
         x = self.pool(x) # pool
         x = self.conv2(x)
@@ -108,7 +108,7 @@ class OnePopModel(Model):
 
         _ = self.call(gt_inputs)
 
-    def get_config(self):
+    '''def get_config(self):
         base_config = super().get_config()
         config = {"pop": self.pop}
         return {**base_config, **config}
@@ -116,7 +116,7 @@ class OnePopModel(Model):
     @classmethod
     def from_config(cls, config):
         pop = 40 # config.pop("pop")
-        return cls(pop, **config)
+        return cls(pop, **config)'''
 
 class TwoPopModel(Model):
     """Two population model"""
