@@ -44,7 +44,7 @@ with tf.GradientTape() as disc_tape:
     real_output = disc(real_regions, training=True)
     fake_output = disc(generated_regions, training=True)
 
-    disc_loss, real_acc, fake_acc = discriminator_loss(real_output, fake_output)
+    disc_loss = discriminator_loss(real_output, fake_output)
 
     # gradient descent
     gradients_of_discriminator = disc_tape.gradient(disc_loss,
