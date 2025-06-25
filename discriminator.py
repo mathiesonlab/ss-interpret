@@ -15,8 +15,8 @@ class OnePopModel(Model):
     """Single population model - based on defiNETti software."""
 
     # SM: 6/24/25 removing saved_model option since it can be loaded directly
-    def __init__(self, **kwargs):
-        super(OnePopModel, self).__init__(**kwargs)
+    def __init__(self):
+        super(OnePopModel, self).__init__()
 
         # it is (1,5) for permutation invariance (shape is n X SNPs)
         self.conv1 = Conv2D(32, (1, 5), activation='relu')
