@@ -18,5 +18,5 @@ disc = tf.keras.models.load_model(SAVED_MODEL, custom_objects={"OnePopModel": di
 
 corrected = np.zeros((1, 20, 36, 2), dtype=np.float32)
 #corrected[0] = region
-pred = disc(corrected, training=False)['output_1'].numpy()[0][0]
-print("pred", pred)
+pred_after = disc(corrected, training=False)
+print("pred_after", pred_after)
