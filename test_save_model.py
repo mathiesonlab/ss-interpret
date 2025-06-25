@@ -18,6 +18,7 @@ disc.save(SAVED_MODEL)
 disc = tf.keras.models.load_model(SAVED_MODEL, custom_objects={"OnePopModel": discriminator.OnePopModel, "pop": 200}) # input_folder is a file in this case
 
 #corrected = np.zeros((1, 20, 36, 2), dtype=np.float32)
+new_pop = np.random.rand(1, 40, 36, 2)#, dtype=np.float32)
 #corrected[0] = region
-pred_after = disc(corrected, training=False)
+pred_after = disc(new_pop, training=False)
 print("pred_after", pred_after)
