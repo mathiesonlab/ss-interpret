@@ -18,10 +18,9 @@ import os
 import visualization as viz
 
 # smathieson or saramathieson
-PATH = "/Users/smathieson/Dropbox/ss-interpret/"
-#PATH = "/homes/smathieson/Documents/pg_gan_interpret/discriminators_og/"
-TRAIN = "CHB" # "YRI" #"CHB" # "CEU" or nontrain
-TEST = "CHS" # "ESN" #"CHS" #"GBR"
+PATH = "/homes/lzong/projects/ss-interpret/"
+TRAIN = "CEU" # "YRI" #"CHB" # "CEU" or nontrain
+TEST = "CHB" # "ESN" #"CHS" #"GBR"
 
 def main():
 
@@ -37,7 +36,7 @@ def main():
     #samples_filename = "/homes/smathieson/GIT/ss-interpret/figs/stats.npy"
     #test_samples = np.load(samples_filename)
 
-    X = np.load(PATH + "summary_stats/stats_" + TEST + "_all.npy")
+    X = np.load(PATH + "summary_stats/stats_" + TEST + ".npy")
     for i in range(20):
         print("----------------")
         print(f"SEED {i}")
@@ -49,7 +48,7 @@ def main():
             num = "230821"
         y = read_prob_file('prob_' + TRAIN + f'_{i}_' + num + '_' + TEST + '.txt')
         X_train, y_train, X_test, y_test = train_test_split(X, y)
-        
+
         print("Before Fine Tune")
         #print("Linear Regression results --")
         #linear_regression(X_train, y_train,  X_test, y_test, f'{output_dir}/lr_bar_chart_before.pdf')
@@ -63,7 +62,7 @@ def main():
         #print("Random Forest results --")
         #random_forest(X_train, y_train,  X_test, y_test, f'{output_dir}/rf_importance_before.pdf')
         #input('enter')
-        
+
         print("After Fine Tune")
         num = "230410_230830"
         if TRAIN == "nontrain":
@@ -116,7 +115,7 @@ def train_test_split(X, y):
     pred_y_test = reg.predict(X_test)
     print(f"MSE for train: {mean_squared_error(y_train, pred_y_train)}")
     print(f"MSE for test: {mean_squared_error(y_test, pred_y_test)}")
-    viz.linear_reg_visual(coef_lst, output_file)        
+    viz.linear_reg_visual(coef_lst, output_file)
     return coef_lst'''
 
 def generic_regression(X_train, y_train, X_test, y_test, model_type):
@@ -137,7 +136,7 @@ def generic_regression(X_train, y_train, X_test, y_test, model_type):
     # r^2
     r2_test = r2_score(y_test, pred_y_test)
     print("r2", r2_test, "mse test", mse_test)#, "depth", depth)
-    
+
 
     #idx = 0 #np.argmin(mse_test) TODO put back, just using depth 3 for viz or 9 for final
     #min_depth = depth_lst[idx]# + 1
@@ -199,12 +198,12 @@ def dtree_reg(X_train, y_train, X_test, y_test, output_file):
 
     param_dist = {
         'max_depth': randint(6, 10),  # Focusing around the optimal values found
-        'min_samples_split': randint(3, 20), 
+        'min_samples_split': randint(3, 20),
         'min_samples_leaf': randint(4, 12)
     }
 
     # Set up RandomizedSearchCV
-    random_search = RandomizedSearchCV(dtree_reg, param_distributions=param_dist, 
+    random_search = RandomizedSearchCV(dtree_reg, param_distributions=param_dist,
                                     n_iter=100, cv=5, scoring='neg_mean_squared_error', random_state=42, n_jobs=-1)
 
     # Fit the model
@@ -239,7 +238,7 @@ def dtree_path(dtree, X_train, X_test):
     y_bin = Binarizer(threshold = 0.5).fit(y)
     y = y_bin.transform(y)[0]
     print(len(y))
-    
+
     clf = GaussianNB().fit(X, y)
     pred_y = clf.predict_proba(X)
     print(pred_y)

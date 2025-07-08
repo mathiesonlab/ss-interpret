@@ -27,7 +27,7 @@ def train_decision_tree(stats, disc_prob):
     Train a decision tree model on the stats to predict the output of the
     discriminator
     """
-    
+
     # split data into training and test
     X_train, X_test, y_train, y_test = train_test_split(stats, disc_prob, test_size=0.2)
 

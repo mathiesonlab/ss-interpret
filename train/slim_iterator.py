@@ -24,8 +24,8 @@ import os
 import sys
 
 # our imports
-import global_vars
-import util
+from pg_gan import global_vars
+from pg_gan import util
 
 TEST_FRAC = 0.2 # fraction used for testing
 

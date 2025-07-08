@@ -13,15 +13,17 @@ import sys
 import tensorflow as tf
 
 # our imports
-import discriminator
-import global_vars
-import real_data_random
+from pg_gan import discriminator
+from pg_gan import global_vars
+from pg_gan import real_data_random
 
 # globals
 #NUM_REGIONS = 1000
 #SEL_TYPE = "AI" # change for different types of selection (i.e. Aug23, Over1, Over2, AI)
 NUM_SNPS = global_vars.NUM_SNPS
-HIDDEN = False # if True, compute last hidden layer, o.w. compute probability
+HIDDEN = True # if True, compute last hidden layer, o.w. compute probability
+BATCH_SIZE = 128
+FC_SIZE = 128
 
 def get_iterator(input_file, bed_file):
     iterator = real_data_random.RealDataRandomIterator(input_file, 
@@ -39,20 +41,29 @@ def get_pop(h5_filename):
 # LAST HIDDEN LAYER
 ################################################################################
 
-def disc_along_genome(iterator, input_folder, output_file, fine_tune_disc=None):
+def disc_along_genome(iterator: real_data_random.RealDataRandomIterator, 
+                      input_folder, output_folder, output_file,
+                      fine_tune_disc: discriminator.OnePopModel=None):
 
     if fine_tune_disc is None:
-        #disc = tf.saved_model.load(input_folder)
-        # new way of loading for later versions of tensorflow
-        #disc = tf.keras.layers.TFSMLayer(input_folder, call_endpoint='serving_default')
-        # for .keras models
-        disc = tf.keras.models.load_model(input_folder, custom_objects={"OnePopModel": discriminator.OnePopModel, "pop": 200}) # input_folder is a file in this case
+        # load
+        # disc = discriminator.OnePopModel(fc_size=128)
+        disc = discriminator.OnePopModel(fc_size=FC_SIZE)
+
+        # load some data to build the model
+        corrected = np.zeros((1, iterator.num_samples, NUM_SNPS, 2),
+                            dtype=np.float32)
+        corrected[0] = iterator.real_region(True, False)
+        _ = disc(corrected, training=False)
+        disc.load_weights(input_folder)
+        print(disc.layers)
+
+        # disc = tf.keras.models.load_model(input_folder, custom_objects={"OnePopModel": discriminator.OnePopModel, "pop": 200}) # input_folder is a file in this case
     else:
         disc = fine_tune_disc
 
     print("sample size", iterator.num_samples)
-    disc_recon = disc #discriminator.OnePopModel(iterator.num_samples,
-    #saved_model=disc)
+    disc.pop = iterator.num_samples
 
     # options for discriminator (neg1 should be False for summary stats)
     neg1 = True
@@ -61,12 +72,15 @@ def disc_along_genome(iterator, input_folder, output_file, fine_tune_disc=None):
 
     # setup output array
     all_regions = []
-    all_logits = []
+    all_hiddens = []
 
     # go through entire genome
     final_end = iterator.num_snps-NUM_SNPS
     num_total = 0
-    #final_end = NUM_REGIONS*NUM_SNPS # fewer for testing
+
+    # batch it
+    batch_regions = []
+    batch_indices = []
     for start_idx in range(0, final_end, NUM_SNPS):
         curr_chrom = iterator.chrom_all[start_idx]
         if curr_chrom != prev_chrom:
@@ -74,51 +88,51 @@ def disc_along_genome(iterator, input_folder, output_file, fine_tune_disc=None):
             prev_chrom = curr_chrom
 
         # get the region of real data
-        #print("OVERRIDING START IDX!!!!")
-        #start_idx = 7651637
-        #curr_chrom = iterator.chrom_all[start_idx]
         region = iterator.real_region(neg1, region_len, start_idx=start_idx)
-        #print(region)
 
         # compute hidden layer or probability
         if region is not None:
-            corrected = np.zeros((1, iterator.num_samples, NUM_SNPS, 2),
+            batch_regions.append(region)
+            batch_indices.append(start_idx)
+
+        if len(batch_regions) == BATCH_SIZE or start_idx + NUM_SNPS >= final_end and \
+           batch_regions:
+            # process batch
+            corrected = np.zeros((len(batch_regions), iterator.num_samples, NUM_SNPS, 2),
                 dtype=np.float32)
-            corrected[0] = region
+            for i, region in enumerate(batch_regions):
+                corrected[i] = region
 
             if HIDDEN:
-                hidden_values = disc_recon.last_hidden_layer(corrected)
-                all_regions.append(hidden_values.numpy()[0])
+                hidden_values = disc.last_hidden_layer(corrected)
+                all_hiddens.extend(hidden_values.numpy().tolist())
 
-            else:
-                #pred = disc(corrected, training=False).numpy()
-                #print("pred", disc_recon(corrected, training=False)['output_1'].numpy())
-                pred_recon = disc_recon(corrected, training=False)['output_1'].numpy()[0][0]
-                #prob = get_prob(pred)
-                all_logits.append(pred_recon)
-                #print("logit", pred_recon)
-                #input('enter')
-                prob_recon = get_prob(pred_recon)
+            pred_recon = disc(corrected, training=False)
 
-                start_base = iterator.pos_all[start_idx]
-                end_idx = start_idx + global_vars.NUM_SNPS
+            prob_recon = tf.math.sigmoid(pred_recon).numpy()[:, 0]
+
+            for idx, prob in zip(batch_indices, prob_recon):
+                curr_chrom = iterator.chrom_all[idx]
+                start_base = iterator.pos_all[idx]
+                end_idx = idx + NUM_SNPS
                 end_base = iterator.pos_all[end_idx]
-                all_regions.append([int(curr_chrom),start_base,end_base,prob_recon])
-                #print(curr_chrom,start_base,end_base,prob_recon)
-                #input('enter')
+                all_regions.append([int(curr_chrom), start_base, end_base, prob])
+                #print(curr_chrom, start_base, end_base, prob)
+            
+            batch_regions = []
+            batch_indices = []
 
         num_total += 1
 
-    print("num good regions", len(all_regions), "/", num_total) #NUM_REGIONS)
+    print("Regions:", len(all_regions), "/", num_total)
+
     if HIDDEN:
-        np.save(output_file + ".npy", np.array(all_regions))
-    elif fine_tune_disc is None:
-        f = open(output_file + ".txt", 'w')
+        np.save(output_folder + "hiddenweights/" + output_file, np.array(all_hiddens))
+
+    # save probs
+    with open(output_folder + "predictions/" + output_file + ".txt", 'w') as f:
         for row in all_regions:
             f.write("\t".join([str(x) for x in row]) + "\n")
-        f.close()
-    else:
-        return all_logits
 
 ################################################################################
 # MAIN
@@ -131,7 +145,6 @@ if __name__ == "__main__":
     input_folder = sys.argv[3]  # folder of discriminator folders
     output_folder = sys.argv[4] # folder for npy files of hidden values
     date = sys.argv[5]
-    #sel_type = sys.argv[6]
 
     pop = get_pop(h5_filename)
     disc_folders = sorted(os.listdir(input_folder))
@@ -150,31 +163,22 @@ if __name__ == "__main__":
     #for i in [0] + list(range(8,20)):
     for i in [0]:
         #print(disc_folders)
-        if not HIDDEN: # only do hidden for fine-tune
-            saved_model = disc_folders[0][:3] + "_" + str(i) + "_" + date + ".keras"
-            if saved_model in disc_folders: # already trained
-                input_file = input_folder + saved_model
-                print("input disc", input_file)
-                if HIDDEN:
-                    kw = "hidden_"
-                else:
-                    kw = "prob_"
-                output_file = output_folder + kw + saved_model + "_" + pop
-                print("output file", output_file)
-                if not os.path.isfile(output_file + ".txt"):
-                    #print("would run predictions")
-                    disc_along_genome(iterator, input_file, output_file)
+
+        saved_model = disc_folders[0][:3] + "_" + str(i) + "_" + date # + ".keras"
+        if saved_model in disc_folders: # already trained
+            input_file = input_folder + saved_model
+
+            print("input disc", input_file)
+            output_file = saved_model.split(".")[0] + "_" + pop
+            print("output file", output_file)
+            disc_along_genome(iterator, input_file, output_folder, output_file)
 
         # fine tuning
         saved_model = disc_folders[0][:3] + "_" + str(i) + "_" + date + "_finetune" # TODO 3 or 8
         if saved_model in disc_folders: # already trained
             input_file = input_folder + saved_model
             print("input disc", input_file)
-            if HIDDEN:
-                kw = "hidden_"
-            else:
-                kw = "prob_"
-            output_file = output_folder + kw + saved_model + "_" + pop
+            output_file = output_folder + saved_model + "_" + pop
             print("output file", output_file)
             if not os.path.isfile(output_file + ".txt"):
                 print("would run predictions")

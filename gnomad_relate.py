@@ -17,7 +17,7 @@ from subprocess import Popen, PIPE
 import sys
 
 # our imports
-import real_data_random
+from pg_gan import real_data_random
 
 ################################################################################
 # GLOBALS

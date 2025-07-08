@@ -9,7 +9,7 @@ import numpy as np
 import tensorflow as tf
 
 # our imports
-from correlation_heatmap import parse_correlation_file
+from analysis.interpret.correlation_heatmap import parse_correlation_file
 
 # this is how to print them all at once, but is not as helpful for getting the actual numbers
 #from tensorflow.python.tools.inspect_checkpoint import print_tensors_in_checkpoint_file

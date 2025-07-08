@@ -14,8 +14,8 @@ import sys
 import tensorflow as tf
 
 # our imports
-import discriminator
-import global_vars
+from pg_gan import discriminator
+from pg_gan import global_vars
 from slim_iterator import SlimIterator
 
 ################################################################################
