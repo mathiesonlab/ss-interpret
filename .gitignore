@@ -1,7 +1,8 @@
 # for now, ignore big folders
 data/
 models/
-results/
+results/*
+!results/figs
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
