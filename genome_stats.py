@@ -10,9 +10,9 @@ import numpy as np
 import sys
 
 # our imports
-import global_vars
-import real_data_random
-#import ss_helpers
+from pg_gan import global_vars
+from pg_gan import real_data_random
+from pg_gan import ss_helpers
 import ss_extra
 
 # globals
@@ -53,16 +53,13 @@ def stats_along_genome(iterator, output_file):
 
         # compute summary stats
         if region is not None:
-            #corrected = np.zeros((1, iterator.num_samples, NUM_SNPS, 2))
-            #corrected[0] = region
+            corrected = np.zeros((1, iterator.num_samples, NUM_SNPS, 2))
+            corrected[0] = region
 
             # TODO double check "max_dist" in ss_helpers
-            #stats = ss_helpers.stats_all(corrected)
+            stats = ss_helpers.stats_all(corrected)
             stats_extra = ss_extra.compute_extra_stats(region)
             all_stats.append(stats_extra) # TODO check dims
-
-            #print(stats_extra)
-            #input('enter')
 
         num_total += 1
 

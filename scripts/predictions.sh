@@ -1,12 +1,25 @@
-TRAIN_POP=${1}  # first command line arg (i.e. CEU)
-TEST_POP=${2} # second command line arg (i.e. GBR)
-DISC="discriminators_og/arch"
-DATE="250331"
+# dir
+DIR=$(dirname "$0")
+
+# input data
+TRAIN_POP="CEU"
+TEST_POP="GBR"
+GENOME="${DIR}/../data/genomes/${TEST_POP}.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.h5"
+MASK="${DIR}/../data/genomes/20120824_strict_mask.bed"
+
+# models
+MODEL="${DIR}/../models/${TRAIN_POP}/"
+
+# output
+OUTPUT="${DIR}/../results/"
+
+# specific suffix for the model
+SUFFIX="230410.h5"
+SIZE=128
 
 # predictions
-echo "python3 genome_disc.py /bigdata/smathieson/1000g-share/HDF5/${TEST_POP}.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.h5 /bigdata/smathieson/1000g-share/HDF5/20120824_strict_mask.bed /homes/smathieson/Documents/pg_gan_interpret/${DISC}/${TRAIN_POP}/ /homes/smathieson/Documents/pg_gan_interpret/${DISC}/predictions/ ${DATE}"
-#python3 genome_disc.py /bigdata/smathieson/1000g-share/HDF5/${TEST_POP}.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.h5 /bigdata/smathieson/1000g-share/HDF5/20120824_strict_mask.bed /homes/smathieson/Documents/pg_gan_interpret/${DISC}/${TRAIN_POP}/ /homes/smathieson/Documents/pg_gan_interpret/${DISC}/predictions/ ${DATE} ${SEL_TYPE}
-
-# last hidden layer
-#echo "python3 genome_disc.py /bigdata/smathieson/1000g-share/HDF5/${TEST_POP}.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.h5 /bigdata/smathieson/1000g-share/HDF5/20120824_strict_mask.bed /homes/smathieson/Documents/pg_gan_interpret/${DISC}/${TRAIN_POP}/ /homes/smathieson/Documents/pg_gan_interpret/${DISC}/hidden/ ${DATE} ${SEL_TYPE}"
-#python3 genome_disc.py /bigdata/smathieson/1000g-share/HDF5/${TEST_POP}.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.h5 /bigdata/smathieson/1000g-share/HDF5/20120824_strict_mask.bed /homes/smathieson/Documents/pg_gan_interpret/${DISC}/${TRAIN_POP}/ /homes/smathieson/Documents/pg_gan_interpret/${DISC}/hidden/ ${DATE} ${SEL_TYPE}
+for i in {4..19}
+do
+    echo "Running predictions for model[${TRAIN_POP}/${SUFFIX}/${i}] on data[${TEST_POP}]"
+    python3 "${DIR}/../genome_disc.py" ${GENOME} ${MASK} ${MODEL} ${OUTPUT} ${SUFFIX} ${i} ${SIZE}
+done
