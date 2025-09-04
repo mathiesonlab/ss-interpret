@@ -1,0 +1,21 @@
+program: train.py
+method: bayes
+metric:
+  name: val_loss
+  goal: minimize
+parameters:
+  fc_size:
+    values: [32, 64, 128]
+  learning_rate:
+    min: 0.00001
+    max: 0.001
+    distribution: log_uniform_values
+  batch_size:
+    values: [32, 64, 128, 256]
+  num_epochs:
+    value: 50
+  seed:
+    value: 0
+project: ss-interpret
+name: discriminators-opt
+

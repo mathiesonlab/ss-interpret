@@ -1,0 +1,13 @@
+dtreeviz
+msprime
+seaborn
+pandas
+tqdm
+scikit-allel
+scikit-learn
+tensorflow[and-cuda]==2.19.0
+keras
+wandb
+
+# NOTE: you need pylibseq. see package here for instructions:
+# https://github.com/zongleon/pylibseq
