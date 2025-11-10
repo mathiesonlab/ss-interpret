@@ -1,6 +1,7 @@
 """
 Compute summary statistics for the dataset generated in dataset.py.
 Uses logic from genome_stats.py to compute stats for both real and simulated data.
+SM: modifying for mosquito data
 """
 
 import sys
@@ -193,8 +194,8 @@ def main(pop: str, max_samples=None, benchmark=True):
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("\nCompute statistics for the dataset.\n")   
-        print("Usage: python compute_ss.py <population>")
-        print("Example: python compute_ss.py CEU")
+        print("Usage: python compute_ss.py <h5 filename>")
+        print("Example: python compute_ss.py GN-BF_gam_biallelic_2017_filter.h5")
         sys.exit(1)
 
     pop = sys.argv[1]
