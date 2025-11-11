@@ -57,7 +57,7 @@ def get_iterator(seed=None) -> RealDataRandomIterator:
     s = seed if seed is not None else DEFAULT_SEED
     iterator = RealDataRandomIterator(filename=h5_file, seed=s)
 
-    print(f"Loaded iterator: {pop} ({s})")
+    #print(f"Loaded iterator: {pop} ({s})")
     print(f"{iterator.num_snps} SNPs | {iterator.num_samples} samples")
 
     return iterator
