@@ -88,14 +88,14 @@ def get_data(n_samples: int, seed=None) -> tuple[np.ndarray, np.ndarray, list[st
     labels = np.ones((total_n,), dtype=np.int8)
 
     # get n_samples from iterator
-    print("Sampling from iterator:", pop)
+    print("Sampling from iterator")
     for i in tqdm(range(n_samples)):
         sample = iterator.real_region(neg1=True, region_len=False)
         samples[i] = sample
 
     # and n_samples from generator
     labels[n_samples:] = 0
-    print("With parameters:")
+    print("Sampling from generator with parameters:")
     print(generator.curr_params)
 
     for i in tqdm(range(n_samples)):
