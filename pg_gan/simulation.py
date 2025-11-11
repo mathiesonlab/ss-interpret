@@ -278,3 +278,64 @@ def bottleneck(params, sample_sizes, seed, reco):
         random_seed = seed)
 
     return ts
+
+def dadi_joint_mig(params, sample_sizes, seed, reco):
+    """Two population mosquito model from 2017 paper"""
+    assert len(sample_sizes) == 2
+
+    gen_per_year = 11
+
+    # described past -> present
+    NI = params.NI.value # the initial ancestral population size
+    TG = params.TG.value*gen_per_year # the time of when the ancestral population begins to change in size
+    NF = params.NF.value # the final ancestral population size, immediately prior to the split
+    TS = params.TS.value*gen_per_year # the time of the split
+    NI1 = params.NI1.value # the initial sizes of population 1 and population 2
+    NI2 = params.NI2.value
+    NF1 = params.NF1.value # the final sizes of these two populations
+    NF2 = params.NF2.value
+    MG = params.MG.value
+
+    # compute growth rates from the start/end sizes and times
+    # negative since backward in time
+    g1 = -(1/TS) * math.log(NI1/NF1)
+    g2 = -(1/TS) * math.log(NI2/NF2)
+    g  = -(1/(TG-TS)) * math.log(NI/NF) # ancestral
+    #small m
+    MG = MG / 2 / NF
+
+    demography = msprime.Demography()
+    demography.add_population(name="POP1", initial_size=NF1)
+    demography.add_population(name="POP2", initial_size=NF2)
+    demography.add_population(name="ANC", initial_size=NF, initially_active=False)
+
+    # dadi joint mig model
+    demography.add_population_parameters_change(time=0, growth_rate=g1, population="POP1")
+    demography.add_population_parameters_change(time=0, growth_rate=g2, population="POP2")
+
+    demography.set_symmetric_migration_rate(populations=["POP1","POP2"], rate=MG)
+    
+    demography.add_population_split(time=TS, derived=["POP1", "POP2"], ancestral="ANC")
+    demography.add_population_parameters_change(time=TS, growth_rate=g, population="ANC")
+    demography.add_population_parameters_change(time=TG, growth_rate=0, population="ANC")
+
+    #print(demography.debug())
+
+    # If TG < TS, the model will throw an error even after sorting.
+    if TS > TG:
+        raise ValueError("Events must be time-sorted: TG must be greater than TS.", TS, TG)
+
+    # simulate ancestry and mutations over that ancestry
+    ts = msprime.sim_ancestry(
+        samples = {'POP1':sample_sizes[0], 'POP2':sample_sizes[1]},
+        demography=demography,
+        sequence_length=global_vars.L,
+        recombination_rate=reco,
+        ploidy=1,
+        random_seed = seed) # keep it in haplotypes
+
+    # TODO testing JC mutation model for multi-allelic sites
+    mts = msprime.sim_mutations(ts, rate=params.mut.value, model="binary")
+    # mts = msprime.sim_mutations(ts, rate=params.mut.value, model="JC69")
+
+    return mts

@@ -152,6 +152,59 @@ class ParamSet:
             self.reco = Parameter(1.25e-8, 1e-9, 1e-7, "reco")
             self.mut = Parameter(1.25e-8, 1e-9, 1e-7, "mut")
 
+        # mosquito dadi joint mig models: CM_vs_UG (1st line, line 112)
+        elif simulator == simulation.dadi_joint_mig:
+            upper_range = 8
+            lower_range = 0.1
+
+            # params = CM_vs_UG_dadi_joint_mig = {
+            #                                 "Population_pair": "CMS_savanna_vs_UGS",
+            #                                 "migration_or_no?": "sym_mig",
+            #                                 "AIC": 173879,
+            #                                 "NI": 367110,
+            #                                 "TS": 31783,
+            #                                 "NI1": 3098698,
+            #                                 "NI2": 219272,
+            #                                 "NF1": 8594624,
+            #                                 "NF2": 6104686,
+            #                                 "2NIm": 4.51427274,
+            #                                 "TG": 99659,
+            #                                 "NF": 31710315
+            #                             }
+            
+            # see 2017 paper, supplementary table 2, line 72
+            params = BFA_vs_GNB_dadi_joint_mig = {
+                'AIC': 32780,
+                'NI': 416431,
+                'TS': 4459,
+                'NI1': 6022347,
+                'NI2': 3480335,
+                'NF1': 19519009,
+                'NF2': 41639292,
+                '2NIm': 19.99418964,  # This value is given directly
+                'TG': 91175,
+                'NF': 9086281
+            }
+
+            self.NI = Parameter(params['NI'], params['NI'] * lower_range, params['NI'] * upper_range, "NI")
+            self.TG = Parameter(params['TG'], 50000, 140000, "TG") # SM: 70k -> 50k
+            self.NF = Parameter(params['NF'], params['NF'] * lower_range, params['NF'] * upper_range, "NF")
+            self.TS = Parameter(params['TS'], 1000, 40000, "TS") # SM: 10k -> 5k -> 1k, 50k -> 40k
+            # strong evidence of recent population expansion, thus NI upper range < NF lower range
+            # https://academic.oup.com/mbe/article/18/7/1353/992401
+            # agrarian revolution in sub-Saharan Africa approximately 10,000–4,000 years ago could be linked to population expansion of A.Gambiae
+            self.NI1 = Parameter(params['NI1'], params['NI1'] * lower_range, params['NI1'] * upper_range, "NI1")
+            self.NI2 = Parameter(params['NI2'], params['NI2'] * lower_range, params['NI2'] * upper_range, "NI2")
+            self.NF1 = Parameter(params['NF1'], params['NF1'] * lower_range, params['NF1'] * upper_range, "NF1")
+            self.NF2 = Parameter(params['NF2'], params['NF2'] * lower_range, params['NF2'] * upper_range, "NF2")
+            # 20 as the upper bound of the dadi model
+            self.MG = Parameter(params['2NIm'], 0, 100, "MG") # SM: 60 -> 100
+
+            # stdpopsim
+            self.reco = Parameter(1.45e-8, 1e-9, 1e-8, "reco") 
+            # 3.5e-9 based on 2017 paper (from drosophila)
+            self.mut = Parameter(3.5e-9, 1e-9, 1e-8, "mut")
+
         else:
             sys.exit(str(simulator) + " not supported")
 
