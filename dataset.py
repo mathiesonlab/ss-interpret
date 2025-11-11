@@ -23,16 +23,13 @@ from pg_gan.util import parse_args, process_opts
 from pg_gan.global_vars import DEFAULT_SEED, NUM_SNPS
 from utils import iterate_seeds
 
-OUTFILE_PATH = "outfiles/{pop}/{pop}_{seed}_{model}.out"
-GENOME_PATH = (
-    "/bigdata/smathieson/1000g-share/HDF5/{pop}.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.h5"
-)
-BED_PATH = "/bigdata/smathieson/1000g-share/HDF5/20120824_strict_mask.bed"
+PREFIX = "/home/mathiesonlab-adm/Documents/mosquito/GN-BF/"
+OUTFILE_PATH = PREFIX + "GN-BF_gam_biallelic_2017_dadi_joint_mig_reduce_mean_filter_param3_seed1.txt"
+GENOME_PATH = PREFIX + "GN-BF_gam_biallelic_2017_filter.h5"
 
-pop = None
-
-_OUTPUT_SAMPLES = "dataset-{pop}/samples.npz"
-_OUTPUT_META = "dataset-{pop}/metadata.csv"
+OUTPUT_X = PREFIX + "X.npz"
+OUTPUT_y = PREFIX + "y.npz"
+OUTPUT_META = PREFIX + "metadata.csv"
 
 def read_outfile(file: str) -> Generator:
     """
@@ -56,8 +53,8 @@ def read_outfile(file: str) -> Generator:
 
 
 def get_iterator(pop: str, seed=None) -> RealDataRandomIterator:
-    h5_file = GENOME_PATH.format(pop=pop)
-    bed_file = BED_PATH
+    h5_file = GENOME_PATH
+    #bed_file = BED_PATH
     s = seed if seed is not None else DEFAULT_SEED
     iterator = RealDataRandomIterator(filename=h5_file, bed_file=bed_file, seed=s)
 
@@ -67,9 +64,7 @@ def get_iterator(pop: str, seed=None) -> RealDataRandomIterator:
     return iterator
 
 
-def get_data(
-    model: str, pop: str, n_samples: int, seed=None
-) -> tuple[np.ndarray, np.ndarray, list[str]]:
+def get_data(model: str, pop: str, n_samples: int, seed=None) -> tuple[np.ndarray, np.ndarray, list[str]]:
     """
     Get a dataset of real and simulated data.
 
@@ -78,21 +73,21 @@ def get_data(
         Labels is a numpy array of shape (n_samples,) with 1 for real and 0 for simulated.
         Sources is a list of strings with the source of each sample.
     """
-    generators: dict[str, Generator] = {}
+    #generators: dict[str, Generator] = {}
     iterator = get_iterator(pop=pop, seed=seed)
 
-    for s in tqdm(iterate_seeds(f"{pop}/{pop}_N_{model}")):
-        outfile = OUTFILE_PATH.format(pop=pop, seed=s, model=model)
-        
-        # mute stdout because its a lot. i'll print params later
-        f = io.StringIO()
-        with contextlib.redirect_stdout(f):
-            generator = read_outfile(outfile)
+    #for s in tqdm(iterate_seeds(f"{pop}/{pop}_N_{model}")):
+    outfile = OUTFILE_PATH.format(pop=pop, seed=s, model=model)
+    
+    # mute stdout because its a lot. i'll print params later
+    f = io.StringIO()
+    with contextlib.redirect_stdout(f):
+        generator = read_outfile(outfile)
 
-        generators[outfile.split("/")[-1].replace(".out", "")] = generator
+    #generators[outfile.split("/")[-1].replace(".out", "")] = generator
 
-    n_generators = len(generators)
-    print(f"Loaded {n_generators} generators.")
+    #n_generators = len(generators)
+    #print(f"Loaded {n_generators} generators.")
 
     # get n_samples from each iterator
     total_n = n_samples * 2
@@ -108,25 +103,26 @@ def get_data(
 
     # and n_samples // n_generators from each generator
     # plus a few extra to make sure we get n_samples
-    n_samps_generators = {}
+    '''n_samps_generators = {}
     n_extra = n_samples % n_generators
     for gen in generators:
         n_samps_generators[gen] = n_samples // n_generators + (1 if n_extra > 0 else 0)
-        n_extra -= 1
+        n_extra -= 1'''
 
     labels[n_samples:] = 0
-    i = 0
-    for gen, generator in generators.items():
-        print("Sampling from generator:", gen)
-        print("With parameters:")
-        print(generator.curr_params)
+    #i = 0
+    #for gen, generator in generators.items():
+    #print("Sampling from generator:", gen)
+    print("With parameters:")
+    print(generator.curr_params)
 
-        for idx in tqdm(range(n_samps_generators[gen])):
-            sample = generator.simulate_batch(1, neg1=True, region_len=False)
-            samples[n_samples + i] = sample
-            sources.append(f"{gen}_{idx}")
-            i += 1
+    for i in tqdm(range(n_samples)):
+        sample = generator.simulate_batch(1, neg1=True, region_len=False)
+        samples[n_samples + i] = sample
+        sources.append(f"{gen}_{idx}")
+        #i += 1
 
+    assert len(samples) == len(labels)
     return samples, labels, sources
 
 
