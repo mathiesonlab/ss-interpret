@@ -51,11 +51,11 @@ def read_outfile(file: str) -> Generator:
     return generator
 
 
-def get_iterator(pop: str, seed=None) -> RealDataRandomIterator:
+def get_iterator(seed=None) -> RealDataRandomIterator:
     h5_file = GENOME_PATH
     #bed_file = BED_PATH
     s = seed if seed is not None else DEFAULT_SEED
-    iterator = RealDataRandomIterator(filename=h5_file, bed_file=bed_file, seed=s)
+    iterator = RealDataRandomIterator(filename=h5_file, seed=s)
 
     print(f"Loaded iterator: {pop} ({s})")
     print(f"{iterator.num_snps} SNPs | {iterator.num_samples} samples")
