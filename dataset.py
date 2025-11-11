@@ -27,9 +27,8 @@ PREFIX = "/home/mathiesonlab-adm/Documents/mosquito/GN-BF/"
 OUTFILE_PATH = PREFIX + "GN-BF_gam_biallelic_2017_dadi_joint_mig_reduce_mean_filter_param3_seed1.txt"
 GENOME_PATH = PREFIX + "GN-BF_gam_biallelic_2017_filter.h5"
 
-OUTPUT_X = PREFIX + "X.npz"
-OUTPUT_y = PREFIX + "y.npz"
-OUTPUT_META = PREFIX + "metadata.csv"
+OUTPUT_X = PREFIX + "X.npy"
+OUTPUT_y = PREFIX + "y.npy"
 
 def read_outfile(file: str) -> Generator:
     """
@@ -73,76 +72,57 @@ def get_data(n_samples: int, seed=None) -> tuple[np.ndarray, np.ndarray, list[st
         Labels is a numpy array of shape (n_samples,) with 1 for real and 0 for simulated.
         Sources is a list of strings with the source of each sample.
     """
-    #generators: dict[str, Generator] = {}
-    iterator = get_iterator(pop=pop, seed=seed)
+    # iterator for real data
+    iterator = get_iterator(seed=seed)
 
-    #for s in tqdm(iterate_seeds(f"{pop}/{pop}_N_{model}")):
+    # generator for simulated data
     outfile = OUTFILE_PATH
-    
     # mute stdout because its a lot. i'll print params later
     f = io.StringIO()
     with contextlib.redirect_stdout(f):
         generator = read_outfile(outfile)
 
-    #generators[outfile.split("/")[-1].replace(".out", "")] = generator
-
-    #n_generators = len(generators)
-    #print(f"Loaded {n_generators} generators.")
-
-    # get n_samples from each iterator
+    # set up output data structures
     total_n = n_samples * 2
-    samples = np.empty((total_n, iterator.num_samples, NUM_SNPS, 2),
-                       dtype=np.float32)
+    samples = np.empty((total_n, iterator.num_samples, NUM_SNPS, 2), dtype=np.float32)
     labels = np.ones((total_n,), dtype=np.int8)
-    sources = []
+
+    # get n_samples from iterator
     print("Sampling from iterator:", pop)
     for i in tqdm(range(n_samples)):
         sample = iterator.real_region(neg1=True, region_len=False)
         samples[i] = sample
-        sources.append(f"{pop}_real_{i}")
 
-    # and n_samples // n_generators from each generator
-    # plus a few extra to make sure we get n_samples
-    '''n_samps_generators = {}
-    n_extra = n_samples % n_generators
-    for gen in generators:
-        n_samps_generators[gen] = n_samples // n_generators + (1 if n_extra > 0 else 0)
-        n_extra -= 1'''
-
+    # and n_samples from generator
     labels[n_samples:] = 0
-    #i = 0
-    #for gen, generator in generators.items():
-    #print("Sampling from generator:", gen)
     print("With parameters:")
     print(generator.curr_params)
 
     for i in tqdm(range(n_samples)):
         sample = generator.simulate_batch(1, neg1=True, region_len=False)
         samples[n_samples + i] = sample
-        sources.append(f"{gen}_{idx}")
-        #i += 1
 
     assert len(samples) == len(labels)
-    return samples, labels, sources
+    return samples, labels
 
 
-def save_data(samples: np.ndarray, labels: np.ndarray, sources: list[str]):
+def save_data(samples: np.ndarray, labels: np.ndarray):
     """
     Save the dataset to npz and csv files.
     """
-    d = os.path.dirname(_OUTPUT_SAMPLES.format(pop=pop))
-    if not os.path.exists(d):
-        os.makedirs(d, exist_ok=True)
+    #d = os.path.dirname(_OUTPUT_SAMPLES.format(pop=pop))
+    #if not os.path.exists(d):
+    #    os.makedirs(d, exist_ok=True)
 
-    np.save(os.path.join(d, "X.npy"), samples)
-    np.save(os.path.join(d, "y.npy"), labels)
+    np.save(OUTPUT_X, samples)
+    np.save(OUTPUT_y, labels)
 
     # save sources as metadata in csv
-    metadata = pd.DataFrame({"source": sources, "label": labels})
-    metadata.to_csv(_OUTPUT_META.format(pop=pop), index=False)
+    #metadata = pd.DataFrame({"source": sources, "label": labels})
+    #metadata.to_csv(_OUTPUT_META.format(pop=pop), index=False)
 
-    print(f"Saved {len(samples)} samples with {samples.shape[1]} SNPs each.")
-    print(f"Metadata saved to {_OUTPUT_META.format(pop=pop)}.")
+    #print(f"Saved {len(samples)} samples with {samples.shape[1]} SNPs each.")
+    #print(f"Metadata saved to {_OUTPUT_META.format(pop=pop)}.")
 
 
 def load_data(pop: str, strategy="memory", dir=None):
@@ -249,5 +229,5 @@ if __name__ == "__main__":
         sys.exit(1)
 
     n_samples = int(sys.argv[1])
-    samples, labels, sources = get_data(n_samples=n_samples, seed=1)
-    save_data(samples, labels, sources)
+    samples, labels = get_data(n_samples=n_samples, seed=1)
+    save_data(samples, labels)
