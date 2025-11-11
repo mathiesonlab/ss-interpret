@@ -64,7 +64,7 @@ def get_iterator(pop: str, seed=None) -> RealDataRandomIterator:
     return iterator
 
 
-def get_data(model: str, pop: str, n_samples: int, seed=None) -> tuple[np.ndarray, np.ndarray, list[str]]:
+def get_data(n_samples: int, seed=None) -> tuple[np.ndarray, np.ndarray, list[str]]:
     """
     Get a dataset of real and simulated data.
 
@@ -77,7 +77,7 @@ def get_data(model: str, pop: str, n_samples: int, seed=None) -> tuple[np.ndarra
     iterator = get_iterator(pop=pop, seed=seed)
 
     #for s in tqdm(iterate_seeds(f"{pop}/{pop}_N_{model}")):
-    outfile = OUTFILE_PATH.format(pop=pop, seed=s, model=model)
+    outfile = OUTFILE_PATH
     
     # mute stdout because its a lot. i'll print params later
     f = io.StringIO()
@@ -244,26 +244,10 @@ class DataGenerator(keras.utils.Sequence):
         return X, y
 
 if __name__ == "__main__":
-    # model, for this file is a date string like '230410'
-    if len(sys.argv) != 4:
-        print("Usage: python dataset.py model n_samples pop")
+    if len(sys.argv) != 2:
+        print("Usage: python dataset.py n_samples") # n_samples=100000 for 100,000 each of real/sim
         sys.exit(1)
 
-    model = sys.argv[1]
-
-    try:
-        n_samples = int(sys.argv[2])
-    except ValueError:
-        print("Usage: python dataset.py model n_samples pop")
-        sys.exit(1)
-
-    pop = sys.argv[3]
-    if pop is None or len(pop) != 3:
-        print("Usage: python dataset.py model n_samples pop")
-        sys.exit(1)
-
-
-    samples, labels, sources = get_data(
-        model=model, pop=pop, n_samples=n_samples, seed=0
-    )
+    n_samples = int(sys.argv[1])
+    samples, labels, sources = get_data(n_samples=n_samples, seed=1)
     save_data(samples, labels, sources)
