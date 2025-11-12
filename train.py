@@ -11,7 +11,7 @@ import os
 from sklearn.model_selection import train_test_split
 
 # Add pg-gan-zip to path to import discriminator
-from pg_gan.discriminator import OnePopModel
+from pg_gan.discriminator import TwoPopModel
 
 # Import dataset loading functions
 from dataset import load_data, DataGenerator
@@ -30,9 +30,9 @@ class WandbMetricsLogger(keras.callbacks.Callback):
         wandb.log(logs)
 
 
-def create_discriminator(fc_size, learning_rate) -> OnePopModel:
+def create_discriminator(fc_size, learning_rate) -> TwoPopModel:
     """Create a discriminator model with specified fc_size."""
-    model = OnePopModel(fc_size=fc_size)
+    model = TwoPopModel(fc_size=fc_size)
     
     # Compile the model with binary crossentropy loss and custom metrics
     model.compile(
@@ -47,11 +47,11 @@ def create_discriminator(fc_size, learning_rate) -> OnePopModel:
     
     return model
 
-def train_discriminator(pop, fc_size, samples, labels, num_epochs=10, batch_size=64, learning_rate=0.001, seed=0, 
+def train_discriminator(fc_size, samples, labels, num_epochs=10, batch_size=64, learning_rate=0.001, seed=0, 
                         randomize_labels=False, randomize_weights=False, name=None):
     """Train a discriminator with specified fc_size."""
     name = "disc" if name is None else name
-    model_path = f"discs/{pop}/{name}_{seed}.keras"
+    model_path = f"discs/{name}_{seed}.keras"
     
     # Set random seeds
     np.random.seed(seed)
@@ -138,7 +138,7 @@ def main():
     """Main training function."""
     # take parameters in as arguments
     parser = argparse.ArgumentParser(description="Train discriminator with different fc_size values.")
-    parser.add_argument('--pop', type=str, default="CEU", help='Population code')
+    #parser.add_argument('--data_path', type=str, help='Path to X.npy, y.npy data')
     parser.add_argument('--fc_size', type=int, default=128, help='Fully connected layer size')
     parser.add_argument('--num_epochs', type=int, default=50, help='Number of training epochs')
     parser.add_argument('--batch_size', type=int, default=64, help='Batch size for training')
@@ -157,7 +157,6 @@ def main():
     print(f"Labels distribution: Real={np.sum(labels)}, Simulated={len(labels) - np.sum(labels)}")
 
     _, _ = train_discriminator(
-        pop=args.pop,
         fc_size=args.fc_size,
         samples=samples,
         labels=labels,

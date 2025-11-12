@@ -28,6 +28,13 @@ class ReduceSum(Layer):
     def call(self, x):
         return reduce_sum(x, axis=1)
 
+@register_keras_serializable()
+class ReduceMean(Layer):
+    # SM: I think I do not need build since there are no weights
+
+    def call(self, x):
+        return tf.math.reduce_mean(x, axis=1)
+
 @register_keras_serializable()    
 class OnePopModel(Model):
     """Single population model - based on defiNETti software."""
@@ -105,20 +112,22 @@ class TwoPopModel(Model):
     """Two population model"""
 
     # integers for num pop1, pop2
-    def __init__(self, pop1, pop2):
+    def __init__(self, pop1, pop2, **kwargs):
         super(TwoPopModel, self).__init__()
+        self.fc_size = kwargs.get("fc_size", 64)
 
         # it is (1,5) for permutation invariance (shape is n X SNPs)
         self.conv1 = Conv2D(32, (1, 5), activation='relu')
         self.conv2 = Conv2D(64, (1, 5), activation='relu')
         self.pool = MaxPooling2D(pool_size = (1,2), strides = (1,2))
 
+        self.reduce = ReduceMean() # using mean here for two pop model
         self.flatten = Flatten()
         self.merge = Concatenate()
         self.dropout = Dropout(rate=0.5)
 
-        self.fc1 = Dense(128, activation='relu')
-        self.fc2 = Dense(128, activation='relu')
+        self.fc1 = Dense(self.fc_size, activation='relu')
+        self.fc2 = Dense(self.fc_size, activation='relu')
         self.dense3 = Dense(1) # 2, activation='softmax') # two classes
 
         self.pop1 = pop1
@@ -145,19 +154,17 @@ class TwoPopModel(Model):
 
         # 1 is the dimension of the individuals
         # can try max or sum as the permutation-invariant function
-        #x_pop1_max = tf.math.reduce_max(x_pop1, axis=1)
-        #x_pop2_max = tf.math.reduce_max(x_pop2, axis=1)
-        x_pop1_sum = tf.math.reduce_sum(x_pop1, axis=1)
-        x_pop2_sum = tf.math.reduce_sum(x_pop2, axis=1)
+        x_pop1_mean = self.reduce(x_pop1)
+        x_pop2_mean = self.reduce(x_pop2)
+        #x_pop1_sum = tf.math.reduce_sum(x_pop1, axis=1)
+        #x_pop2_sum = tf.math.reduce_sum(x_pop2, axis=1)
 
         # flatten all
-        #x_pop1_max = self.flatten(x_pop1_max)
-        #x_pop2_max = self.flatten(x_pop2_max)
-        x_pop1_sum = self.flatten(x_pop1_sum)
-        x_pop2_sum = self.flatten(x_pop2_sum)
+        x_pop1_mean = self.flatten(x_pop1_mean)
+        x_pop2_mean = self.flatten(x_pop2_mean)
 
         # concatenate
-        m = self.merge([x_pop1_sum, x_pop2_sum]) # [x_pop1_max, x_pop2_max]
+        m = self.merge([x_pop1_mean, x_pop2_mean]) # [x_pop1_max, x_pop2_max]
         m = self.fc1(m)
         m = self.dropout(m, training=training)
         m = self.fc2(m)

@@ -125,18 +125,20 @@ def save_data(samples: np.ndarray, labels: np.ndarray):
     #print(f"Metadata saved to {_OUTPUT_META.format(pop=pop)}.")
 
 
-def load_data(pop: str, strategy="memory", dir=None):
+def load_data(strategy="memory", dir=None):
     """
     Load the dataset from the npz file.
     Returns a tuple of (samples, labels).
     """
-    if dir:
+    '''if dir:
         file = os.path.join(dir, f"dataset-{pop}", "samples.npz")
     else:
         file = _OUTPUT_SAMPLES.format(pop=pop)
     d = os.path.dirname(file)
     if not os.path.exists(d):
-        raise FileNotFoundError(f"Dataset path {file} does not exist.")
+        raise FileNotFoundError(f"Dataset path {file} does not exist.")'''
+
+    d = PREFIX
 
     if strategy == "memory":
         # Load samples and labels into memory
