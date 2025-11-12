@@ -63,7 +63,6 @@ def train_discriminator(fc_size, samples, labels, num_epochs=10, batch_size=64, 
     
     # Initialize wandb run
     run = wandb.init(project="ss-interpret", config={
-        "pop": pop,
         "fc_size": fc_size,
         "num_epochs": num_epochs,
         "batch_size": batch_size,
