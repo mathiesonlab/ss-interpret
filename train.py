@@ -151,7 +151,7 @@ def main():
     args = parser.parse_args()
     # Load data
     print("Loading dataset...")
-    samples, labels = load_data(args.pop, dir="/tmp")
+    samples, labels = load_data(dir="/tmp")
 
     print(f"Dataset shape: {samples.shape}")
     print(f"Labels distribution: Real={np.sum(labels)}, Simulated={len(labels) - np.sum(labels)}")
