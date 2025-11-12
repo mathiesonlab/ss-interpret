@@ -16,6 +16,10 @@ from pg_gan.discriminator import TwoPopModel
 # Import dataset loading functions
 from dataset import load_data, DataGenerator
 
+# GN-BF
+POP1_n = 62
+POP2_n = 162
+
 class WandbMetricsLogger(keras.callbacks.Callback):
     def __init__(self):
         super().__init__()
@@ -32,7 +36,7 @@ class WandbMetricsLogger(keras.callbacks.Callback):
 
 def create_discriminator(fc_size, learning_rate) -> TwoPopModel:
     """Create a discriminator model with specified fc_size."""
-    model = TwoPopModel(fc_size=fc_size)
+    model = TwoPopModel(POP1_n, POP2_n, fc_size=fc_size)
     
     # Compile the model with binary crossentropy loss and custom metrics
     model.compile(
