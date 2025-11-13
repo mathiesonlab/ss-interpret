@@ -83,12 +83,11 @@ def main(pop, model_path, fc_size, max_samples=None, benchmark=True):
 if __name__ == "__main__":
     if len(sys.argv) < 3:
         print("\nComputes preds and lf for all seeds (filtered) like <model_path>\n")   
-        print("Usage: python compute_preds.py <population> <model_path> [fc_size]")
-        print("Example: python compute_preds.py CEU discs/CEU/disc_N.keras 64")
+        print("Usage: python compute_preds.py <model_path> [fc_size]")
+        print("Example: python compute_preds.py discs/disc_N.keras 64")
         sys.exit(1)
 
-    pop = sys.argv[1]
-    model_path = sys.argv[2]
-    fc_size = 64 if len(sys.argv) < 4 else sys.argv[3]
+    model_path = sys.argv[1]
+    fc_size = 64 if len(sys.argv) < 3 else sys.argv[2]
 
     main(pop, model_path, fc_size, max_samples=None, benchmark=True)

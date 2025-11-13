@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
-from pg_gan.discriminator import OnePopModel
+#from pg_gan.discriminator import OnePopModel
 from dataset import load_data, load_metadata
 from utils import BATCH_SIZE, apply_seed_to_path, get_model, get_model_preds_lf, iterate_seeds
 from sklearn.metrics import classification_report, accuracy_score

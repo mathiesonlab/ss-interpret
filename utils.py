@@ -8,7 +8,7 @@ import time
 import pandas as pd
 from tqdm import tqdm
 import tensorflow as tf
-from pg_gan.discriminator import OnePopModel
+from pg_gan.discriminator import TwoPopModel
 from pg_gan.ss_helpers import ALL_STATS
 
 BATCH_SIZE = 1000
@@ -32,7 +32,7 @@ def get_model(model_path: str, example: np.ndarray, seed: int | None = None,
     """
     Load the discriminator model.
     """
-    model = OnePopModel(fc_size=int(fc_size), add_norm=add_norm)
+    model = TwoPopModel(fc_size=int(fc_size), add_norm=add_norm)
     _ = model(example, training=False)
 
     if seed is not None:
@@ -59,7 +59,7 @@ def iterate_seeds(model_path: str, start=0, stop=20):
         yield seed
 
 
-def compute_all_for_dataset(model: OnePopModel, samples: np.ndarray, max_samples=None, benchmark=True):
+def compute_all_for_dataset(model: TwoPopModel, samples: np.ndarray, max_samples=None, benchmark=True):
     if max_samples is not None:
         samples = samples[:max_samples]
 
