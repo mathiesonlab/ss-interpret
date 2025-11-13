@@ -21,9 +21,8 @@ from pg_gan.generator import Generator
 from pg_gan.ss_helpers import parse_output
 from pg_gan.util import parse_args, process_opts
 from pg_gan.global_vars import DEFAULT_SEED, NUM_SNPS
-from utils import iterate_seeds
+from utils import PREFIX
 
-PREFIX = "/home/mathiesonlab-adm/Documents/mosquito/GN-BF/"
 OUTFILE_PATH = PREFIX + "GN-BF_gam_biallelic_2017_dadi_joint_mig_reduce_mean_filter_param3_seed1.txt"
 GENOME_PATH = PREFIX + "GN-BF_gam_biallelic_2017_filter.h5"
 

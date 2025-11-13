@@ -10,7 +10,7 @@ import pandas as pd
 
 # our imports
 from dataset import load_data
-from utils import BATCH_SIZE, compute_all_for_dataset, get_model, save_preds_lf
+from utils import BATCH_SIZE, PREFIX, compute_all_for_dataset, get_model, save_preds_lf
 
 def analyze_timing_statistics(timing_data):
     """

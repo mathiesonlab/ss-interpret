@@ -15,7 +15,7 @@ from pg_gan.discriminator import TwoPopModel
 
 # Import dataset loading functions
 from dataset import load_data, DataGenerator
-from utils import POP1_n, POP2_n
+from utils import POP1_n, POP2_n, PREFIX
 
 class WandbMetricsLogger(keras.callbacks.Callback):
     def __init__(self):
@@ -52,7 +52,7 @@ def train_discriminator(fc_size, samples, labels, num_epochs=10, batch_size=64, 
                         randomize_labels=False, randomize_weights=False, name=None):
     """Train a discriminator with specified fc_size."""
     name = "disc" if name is None else name
-    model_path = f"discs/{name}_{seed}.keras"
+    model_path = PREFIX + f"discs/{name}_{seed}.keras"
     
     # Set random seeds
     np.random.seed(seed)

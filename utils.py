@@ -16,6 +16,7 @@ BATCH_SIZE = 1000
 # GN-BF
 POP1_n = 62
 POP2_n = 162
+PREFIX = "/home/mathiesonlab-adm/Documents/mosquito/GN-BF/"
 
 FILTERED = ["CEU/CEU_9_230410", "CEU/CEU_12_230410", "CEU/CEU_18_230410"] + \
            [f"YRI/YRI_{i}_230410" for i in [13, 14, 15, 17, 18]] + \
@@ -102,7 +103,7 @@ def save_preds_lf(model_str, preds, lf):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir, exist_ok=True)
 
-    np.savez_compressed(output_dir, preds=preds, lf=lf)
+    np.savez_compressed(preds_lf_path(model_str), preds=preds, lf=lf)
 
 
 def get_model_preds_lf(pop, model_name):
