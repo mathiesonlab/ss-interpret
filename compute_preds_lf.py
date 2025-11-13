@@ -88,4 +88,4 @@ if __name__ == "__main__":
     model_path = sys.argv[1]
     fc_size = 64 if len(sys.argv) < 3 else sys.argv[2]
 
-    main(model_path, fc_size, max_samples=10, benchmark=True)
+    main(model_path, fc_size, max_samples=None, benchmark=True)
