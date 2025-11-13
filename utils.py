@@ -94,7 +94,7 @@ def compute_all_for_dataset(model: TwoPopModel, samples: np.ndarray, max_samples
     
     return all_preds, all_lf
 
-def preds_lf_path(pop, model_str):
+def preds_lf_path(model_str):
     return _OUTPUT_PATH.format(model_name=model_str)
 
 def save_preds_lf(model_str, preds, lf):
