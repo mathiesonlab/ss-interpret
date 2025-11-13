@@ -10,7 +10,7 @@ import pandas as pd
 
 # our imports
 from dataset import load_data
-from utils import BATCH_SIZE, compute_all_for_dataset, get_model, preds_lf_path, save_preds_lf
+from utils import BATCH_SIZE, compute_all_for_dataset, get_model, save_preds_lf
 
 def analyze_timing_statistics(timing_data):
     """
@@ -68,7 +68,7 @@ def main(model_path, fc_size, max_samples=None, benchmark=True):
         preds, lf = compute_all_for_dataset(model, samples, max_samples=max_samples, benchmark=False)
     
     # Save results
-    save_preds_lf(pop, model_name, preds, lf)
+    save_preds_lf(model_name, preds, lf)
 
     # Print shape of everything
     # print(f"Predictions shape: {preds.shape}")

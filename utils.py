@@ -25,7 +25,7 @@ FILTERED = ["CEU/CEU_9_230410", "CEU/CEU_12_230410", "CEU/CEU_18_230410"] + \
 SELECTED_STATS = [stat for stat in ALL_STATS if stat not in ["tajimas_d", "ones"] and 
                   not stat.startswith("inter-SNP")]
 
-_OUTPUT_PATH = "dataset-{pop}/computed/{model_name}_preds_lf.npz"
+_OUTPUT_PATH = "computed/{model_name}_preds_lf.npz"
 
 def apply_seed_to_path(model_path: str, seed: int) -> str:
     return model_path.replace("N", str(seed))
@@ -95,14 +95,14 @@ def compute_all_for_dataset(model: TwoPopModel, samples: np.ndarray, max_samples
     return all_preds, all_lf
 
 def preds_lf_path(pop, model_str):
-    return _OUTPUT_PATH.format(pop=pop, model_name=model_str)
+    return _OUTPUT_PATH.format(model_name=model_str)
 
-def save_preds_lf(pop, model_str, preds, lf):
-    output_dir = os.path.dirname(preds_lf_path(pop, model_str))
+def save_preds_lf(model_str, preds, lf):
+    output_dir = os.path.dirname(preds_lf_path(model_str))
     if not os.path.exists(output_dir):
         os.makedirs(output_dir, exist_ok=True)
 
-    np.savez_compressed(preds_lf_path(pop, model_str), preds=preds, lf=lf)
+    np.savez_compressed(output_dir, preds=preds, lf=lf)
 
 
 def get_model_preds_lf(pop, model_name):
