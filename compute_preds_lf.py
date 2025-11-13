@@ -53,9 +53,7 @@ def main(model_path, fc_size, max_samples=None, benchmark=True):
     #for seed in iterate_seeds(model_path, stop=5 if "random" in model_path else 20):
     model_name = os.path.basename(model_path).split(".")[0]
     print(f"\nProcessing model {model_name}...")
-    model = get_model(model_path, samples[0:1], seed=seed, 
-                        fc_size=fc_size,
-                        add_norm=("discs" in model_path))
+    model = get_model(model_path, samples[0:1], fc_size=fc_size, add_norm=("discs" in model_path))
 
     #if os.path.exists(preds_lf_path(pop, model_name)):
     #    print(f"Results for model {model_name} already exist. Skipping...")

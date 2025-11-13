@@ -26,15 +26,12 @@ _OUTPUT_PATH = "dataset-{pop}/computed/{model_name}_preds_lf.npz"
 def apply_seed_to_path(model_path: str, seed: int) -> str:
     return model_path.replace("N", str(seed))
 
-def get_model(model_path: str, example: np.ndarray, seed: int | None = None, 
-              fc_size: int = 64,
-              add_norm: bool = False):
+def get_model(model_path: str, example: np.ndarray, fc_size: int = 64, add_norm: bool = False):
     """
     Load the discriminator model.
     """
     model = TwoPopModel(fc_size=int(fc_size), add_norm=add_norm)
     _ = model(example, training=False)
-
 
     # model_path can be a specific file
     model.load_weights(model_path)
