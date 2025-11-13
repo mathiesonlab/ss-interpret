@@ -10,7 +10,7 @@ import pandas as pd
 
 # our imports
 from dataset import load_data
-from utils import BATCH_SIZE, apply_seed_to_path, compute_all_for_dataset, get_model, iterate_seeds, preds_lf_path, save_preds_lf
+from utils import BATCH_SIZE, compute_all_for_dataset, get_model, preds_lf_path, save_preds_lf
 
 def analyze_timing_statistics(timing_data):
     """
@@ -38,10 +38,10 @@ def analyze_timing_statistics(timing_data):
     summary_df.to_csv("./figdata/timing_analysis_preds.csv", index=False)
 
 
-def main(pop, model_path, fc_size, max_samples=None, benchmark=True):
+def main(model_path, fc_size, max_samples=None, benchmark=True):
     # Load the dataset
     print("Loading dataset...")
-    samples, _ = load_data(pop)
+    samples, _ = load_data()
     print(f"Dataset shape: {samples.shape}")
     
     if max_samples is not None:
@@ -50,27 +50,27 @@ def main(pop, model_path, fc_size, max_samples=None, benchmark=True):
     if benchmark:
         all_timings = []
 
-    for seed in iterate_seeds(model_path, stop=5 if "random" in model_path else 20):
-        model_name = os.path.basename(apply_seed_to_path(model_path, seed)).split(".")[0]
-        print(f"\nProcessing model {model_name}...")
-        model = get_model(model_path, samples[0:1], seed=seed, 
-                          fc_size=fc_size,
-                          add_norm=("discs" in model_path))
+    #for seed in iterate_seeds(model_path, stop=5 if "random" in model_path else 20):
+    model_name = os.path.basename(model_path).split(".")[0]
+    print(f"\nProcessing model {model_name}...")
+    model = get_model(model_path, samples[0:1], seed=seed, 
+                        fc_size=fc_size,
+                        add_norm=("discs" in model_path))
 
-        if os.path.exists(preds_lf_path(pop, model_name)):
-            print(f"Results for model {model_name} already exist. Skipping...")
-            continue
+    if os.path.exists(preds_lf_path(pop, model_name)):
+        print(f"Results for model {model_name} already exist. Skipping...")
+        continue
 
-        # Compute preds and lf
-        if benchmark:
-            preds, lf, timing_data = compute_all_for_dataset(model, samples, max_samples=max_samples, benchmark=True)
-            all_timings.extend(timing_data)
-            
-        else:
-            preds, lf = compute_all_for_dataset(model, samples, max_samples=max_samples, benchmark=False)
+    # Compute preds and lf
+    if benchmark:
+        preds, lf, timing_data = compute_all_for_dataset(model, samples, max_samples=max_samples, benchmark=True)
+        all_timings.extend(timing_data)
         
-        # Save results
-        save_preds_lf(pop, model_name, preds, lf)
+    else:
+        preds, lf = compute_all_for_dataset(model, samples, max_samples=max_samples, benchmark=False)
+    
+    # Save results
+    save_preds_lf(pop, model_name, preds, lf)
 
     # Print shape of everything
     # print(f"Predictions shape: {preds.shape}")
@@ -90,4 +90,4 @@ if __name__ == "__main__":
     model_path = sys.argv[1]
     fc_size = 64 if len(sys.argv) < 3 else sys.argv[2]
 
-    main(pop, model_path, fc_size, max_samples=None, benchmark=True)
+    main(model_path, fc_size, max_samples=10, benchmark=True)

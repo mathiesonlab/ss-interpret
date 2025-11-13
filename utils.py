@@ -35,12 +35,9 @@ def get_model(model_path: str, example: np.ndarray, seed: int | None = None,
     model = TwoPopModel(fc_size=int(fc_size), add_norm=add_norm)
     _ = model(example, training=False)
 
-    if seed is not None:
-        # model path is a template with 'N' for seed
-        model.load_weights(apply_seed_to_path(model_path, seed))
-    else:
-        # model_path can be a specific file
-        model.load_weights(model_path)
+
+    # model_path can be a specific file
+    model.load_weights(model_path)
 
     return model
 
