@@ -171,6 +171,42 @@ class TwoPopModel(Model):
         m = self.dropout(m, training=training)
         return self.dense3(m)
 
+    def last_hidden_layer(self, x):
+        """Get output of last hidden layer (before final dense layer)"""
+        assert x.shape[1] == self.pop1 + self.pop2
+
+        # first divide into populations
+        x_pop1 = x[:, :self.pop1, :, :]
+        x_pop2 = x[:, self.pop1:, :, :]
+
+        # two conv layers for each part
+        x_pop1 = self.conv1(x_pop1)
+        x_pop2 = self.conv1(x_pop2)
+        x_pop1 = self.pool(x_pop1) # pool
+        x_pop2 = self.pool(x_pop2) # pool
+
+        x_pop1 = self.conv2(x_pop1)
+        x_pop2 = self.conv2(x_pop2)
+        x_pop1 = self.pool(x_pop1) # pool
+        x_pop2 = self.pool(x_pop2) # pool
+
+        # 1 is the dimension of the individuals
+        # can try max or sum as the permutation-invariant function
+        x_pop1_mean = self.reduce(x_pop1)
+        x_pop2_mean = self.reduce(x_pop2)
+        #x_pop1_sum = tf.math.reduce_sum(x_pop1, axis=1)
+        #x_pop2_sum = tf.math.reduce_sum(x_pop2, axis=1)
+
+        # flatten all
+        x_pop1_mean = self.flatten(x_pop1_mean)
+        x_pop2_mean = self.flatten(x_pop2_mean)
+
+        # concatenate
+        m = self.merge([x_pop1_mean, x_pop2_mean]) # [x_pop1_max, x_pop2_max]
+        m = self.fc1(m)
+        m = self.fc2(m)
+        return m
+
     def build_graph(self, gt_shape):
         """This is for testing, based on TF tutorials"""
         gt_shape_nobatch = gt_shape[1:]
