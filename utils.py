@@ -26,7 +26,7 @@ FILTERED = ["CEU/CEU_9_230410", "CEU/CEU_12_230410", "CEU/CEU_18_230410"] + \
 SELECTED_STATS = [stat for stat in ALL_STATS if stat not in ["tajimas_d", "ones"] and 
                   not stat.startswith("inter-SNP")]
 
-_OUTPUT_PATH = "computed/{model_name}_preds_lf.npz"
+_OUTPUT_PATH = PREFIX + "computed/{model_name}_preds_lf.npz"
 
 def apply_seed_to_path(model_path: str, seed: int) -> str:
     return model_path.replace("N", str(seed))
