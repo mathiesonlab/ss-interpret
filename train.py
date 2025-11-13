@@ -15,10 +15,7 @@ from pg_gan.discriminator import TwoPopModel
 
 # Import dataset loading functions
 from dataset import load_data, DataGenerator
-
-# GN-BF
-POP1_n = 62
-POP2_n = 162
+from utils import POP1_n, POP2_n
 
 class WandbMetricsLogger(keras.callbacks.Callback):
     def __init__(self):

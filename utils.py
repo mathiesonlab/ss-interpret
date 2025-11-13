@@ -13,6 +13,10 @@ from pg_gan.ss_helpers import ALL_STATS
 
 BATCH_SIZE = 1000
 
+# GN-BF
+POP1_n = 62
+POP2_n = 162
+
 FILTERED = ["CEU/CEU_9_230410", "CEU/CEU_12_230410", "CEU/CEU_18_230410"] + \
            [f"YRI/YRI_{i}_230410" for i in [13, 14, 15, 17, 18]] + \
            ["CHB/CHB_8_230410", "CHB/CHB_15_230410", "CHB/CHB_18_230410"] + \
@@ -30,7 +34,7 @@ def get_model(model_path: str, example: np.ndarray, fc_size: int = 64, add_norm:
     """
     Load the discriminator model.
     """
-    model = TwoPopModel(fc_size=int(fc_size), add_norm=add_norm)
+    model = TwoPopModel(POP1_n, POP2_n, fc_size=int(fc_size), add_norm=add_norm)
     _ = model(example, training=False)
 
     # model_path can be a specific file
