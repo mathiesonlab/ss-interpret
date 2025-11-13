@@ -57,9 +57,9 @@ def main(model_path, fc_size, max_samples=None, benchmark=True):
                         fc_size=fc_size,
                         add_norm=("discs" in model_path))
 
-    if os.path.exists(preds_lf_path(pop, model_name)):
-        print(f"Results for model {model_name} already exist. Skipping...")
-        continue
+    #if os.path.exists(preds_lf_path(pop, model_name)):
+    #    print(f"Results for model {model_name} already exist. Skipping...")
+    #    continue
 
     # Compute preds and lf
     if benchmark:
