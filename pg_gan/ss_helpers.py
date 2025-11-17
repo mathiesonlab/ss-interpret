@@ -226,7 +226,7 @@ def compute_stats(vm, vm_region, benchmark=False):
         return stats, timings
     return stats
 
-def compute_fst(raw, benchmark=False):
+def compute_fst(raw, sample_sizes, benchmark=False):
     """
     FST (for two populations)
     https://scikit-allel.readthedocs.io/en/stable/stats/fst.html
@@ -240,7 +240,8 @@ def compute_fst(raw, benchmark=False):
     raw = np.expand_dims(raw, axis=2).astype('i')
 
     g = allel.GenotypeArray(raw)
-    subpops = [range(nsam//2), range(nsam//2, nsam)]
+    total = sum(sample_sizes)
+    subpops = [range(sample_sizes[0]), range(sample_sizes[0], total)]
 
     # for each pop
     ac1 = g.count_alleles(subpop=subpops[0])
@@ -418,7 +419,7 @@ def stats_all(matrices, matrices_region=None, benchmark=False):
     
     return result
 
-def fst_all(matrices, benchmark=False):
+def fst_all(matrices, sample_sizes, benchmark=False):
     """Fst for all regions"""
     if benchmark:
         start_time = time.time()
@@ -432,10 +433,10 @@ def fst_all(matrices, benchmark=False):
         intersnp = matrix[:,:,1][0] # all the same
 
         if benchmark:
-            fst, fst_time = compute_fst(raw, benchmark=True)
+            fst, fst_time = compute_fst(raw, sample_sizes, benchmark=True)
             fst_times.append(fst_time)
         else:
-            fst = compute_fst(raw)
+            fst = compute_fst(raw, sample_sizes)
         real_fst.append(fst)
 
     if benchmark:
