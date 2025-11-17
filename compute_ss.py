@@ -13,6 +13,7 @@ from collections import defaultdict
 # our imports
 from pg_gan import ss_helpers, ss_extra
 from dataset import load_data, metadata_file
+from utils import POP1_n, POP2_n
 
 def split_matrices(matrices, sample_sizes):
 
@@ -61,6 +62,7 @@ def compute_stats_for_dataset(samples, max_samples=None, benchmark=True):
         print("Benchmarking enabled - collecting timing data...")
 
     # split into populations if more than one
+    sample_sizes = [POP1_n, POP2_n]
     samples_per_pop = split_matrices(samples, sample_sizes)
     
     aggregated_stats = []
