@@ -171,10 +171,10 @@ def save_stats_with_metadata(stats, max_samples=None):
     print(f"Saved statistics to metadata file")
     print(f"Statistics shape: {stats.shape}")
 
-def main(pop: str, max_samples=None, benchmark=True):    
+def main(max_samples=None, benchmark=True):    
     # Load the dataset
     print("Loading dataset...")
-    samples, _ = load_data(pop)
+    samples, _ = load_data()
     print(f"Dataset shape: {samples.shape}")
     
     if max_samples is not None:
@@ -192,11 +192,6 @@ def main(pop: str, max_samples=None, benchmark=True):
     save_stats_with_metadata(stats, max_samples=max_samples)
     
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("\nCompute statistics for the dataset.\n")   
-        print("Usage: python compute_ss.py <h5 filename>")
-        print("Example: python compute_ss.py GN-BF_gam_biallelic_2017_filter.h5")
-        sys.exit(1)
-
-    pop = sys.argv[1]
-    main(pop, benchmark=True)
+    print("\nCompute statistics for the dataset.\n")   
+    print("Usage: python compute_ss.py")
+    main(max_samples=10, benchmark=True)
