@@ -154,7 +154,7 @@ def save_stats_with_metadata(stats, max_samples=None):
         Number of samples processed (for limiting metadata updates)
     """
     # Update the original metadata file with statistics
-    output_file = metadata_file(pop)
+    output_file = metadata_file()
     metadata = pd.read_csv(output_file)
 
     if max_samples is not None:
