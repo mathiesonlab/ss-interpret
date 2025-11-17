@@ -155,7 +155,7 @@ def load_data(strategy="memory", dir=None):
 
     return samples, labels
 
-def metadata_file(pop: str) -> str:
+def metadata_file() -> str:
     """
     Returns the path to the metadata file for the given population.
     """
