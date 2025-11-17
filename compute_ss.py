@@ -166,7 +166,8 @@ def save_stats_with_metadata(stats, max_samples=None):
     for i, stat_name in enumerate(ss_helpers.ALL_STATS):
         metadata[stat_name] = stats[:, i]
     
-    metadata.to_csv(output_file, index=False)
+    df = pd.DataFrame(metadata)
+    df.to_csv(output_file, index=False)
     print(f"Updated metadata file: {output_file}")
 
     print(f"Saved statistics to metadata file")
