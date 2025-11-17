@@ -94,7 +94,7 @@ def compute_stats_for_dataset(samples, max_samples=None, benchmark=True):
         return np.array(all_stats), timing_data
     return np.array(all_stats)
 
-def analyze_timing_statistics(timing_data, pop):
+def analyze_timing_statistics(timing_data):
     """
     Compute mean and standard deviation for each statistic's computation time.
     Pretty-prints the results.
@@ -124,7 +124,7 @@ def analyze_timing_statistics(timing_data, pop):
     timing_summary = pd.DataFrame(timing_summary)
 
     # Save timing data
-    timing_file = f'figdata/timing_analysis_{pop}.csv'
+    timing_file = f'figdata/timing_analysis.csv'
     timing_summary.to_csv(timing_file, index=False)
 
     print("\n" + "="*80)
@@ -184,7 +184,7 @@ def main(max_samples=None, benchmark=True):
     if benchmark:
         stats, timing_data = compute_stats_for_dataset(samples, max_samples=max_samples, benchmark=True)
         
-        analyze_timing_statistics(timing_data, pop)
+        analyze_timing_statistics(timing_data)
     else:
         stats = compute_stats_for_dataset(samples, max_samples=max_samples, benchmark=False)
     
