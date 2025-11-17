@@ -155,13 +155,14 @@ def save_stats_with_metadata(stats, max_samples=None):
     """
     # Update the original metadata file with statistics
     output_file = metadata_file()
-    metadata = pd.read_csv(output_file)
+    #metadata = pd.read_csv(output_file)
 
-    if max_samples is not None:
-        metadata = metadata.head(max_samples)
+    #if max_samples is not None:
+    #    metadata = metadata.head(max_samples)
     
     print("Adding statistics to metadata file...")
     # Add statistics columns to metadata
+    metadata = {}
     for i, stat_name in enumerate(ss_helpers.ALL_STATS):
         metadata[stat_name] = stats[:, i]
     
@@ -189,7 +190,7 @@ def main(max_samples=None, benchmark=True):
         stats = compute_stats_for_dataset(samples, max_samples=max_samples, benchmark=False)
     
     # Save results
-    #save_stats_with_metadata(stats, max_samples=max_samples)
+    save_stats_with_metadata(stats, max_samples=max_samples)
     
 if __name__ == "__main__":
     print("\nCompute statistics for the dataset.\n")   
