@@ -189,7 +189,7 @@ def main(max_samples=None, benchmark=True):
         stats = compute_stats_for_dataset(samples, max_samples=max_samples, benchmark=False)
     
     # Save results
-    save_stats_with_metadata(stats, max_samples=max_samples)
+    #save_stats_with_metadata(stats, max_samples=max_samples)
     
 if __name__ == "__main__":
     print("\nCompute statistics for the dataset.\n")   
