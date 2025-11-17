@@ -79,7 +79,7 @@ def compute_stats_for_dataset(samples, max_samples=None, benchmark=True):
     #    return np.array(all_stats), timing_data
     return np.array(aggregated_stats)
 
-def stats_per_pop(samples):
+def stats_per_pop(samples, benchmark=True):
 
     all_stats = []
     timing_data = defaultdict(list) if benchmark else None
