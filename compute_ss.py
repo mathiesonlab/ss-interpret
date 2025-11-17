@@ -81,7 +81,7 @@ def compute_stats_for_dataset(samples, max_samples=None, benchmark=True):
     print("without fst", np.array(aggregated_stats).shape)
 
     # compute Fst
-    fst, timing = ss_helpers.fst_all(samples, sample_sizes)
+    fst, timing = ss_helpers.fst_all(samples, sample_sizes, benchmark=True) # TODO stopped here!
     print("Fst", fst)
     input("add on fst here!")
     
