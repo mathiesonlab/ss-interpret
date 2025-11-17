@@ -33,6 +33,14 @@ def split_matrices(matrices, sample_sizes):
 
     return _all
 
+# Compute original summary stats
+def flatten(data):
+    for item in data:
+        if isinstance(item, (list, tuple)):
+            yield from flatten(item)
+        else:
+            yield float(item)
+
 def compute_stats_for_dataset(samples, max_samples=None, benchmark=True):
     """
     Compute summary statistics for the entire dataset.
@@ -73,8 +81,8 @@ def compute_stats_for_dataset(samples, max_samples=None, benchmark=True):
     print("without fst", np.array(aggregated_stats).shape)
 
     # compute Fst
-    real_fst = ss_helpers.fst_all(samples, sample_sizes)
-    print("Fst", real_fst)
+    fst, timing = ss_helpers.fst_all(samples, sample_sizes)
+    print("Fst", fst)
     input("add on fst here!")
     
     #if benchmark:
@@ -95,14 +103,6 @@ def stats_per_pop(samples, benchmark=True):
         # ss_helpers.stats_all expects shape (batch_size, num_samples, num_snps, 2)
         corrected = np.zeros((1, sample.shape[0], sample.shape[1], 2))
         corrected[0] = sample
-        
-        # Compute original summary stats
-        def flatten(data):
-            for item in data:
-                if isinstance(item, (list, tuple)):
-                    yield from flatten(item)
-                else:
-                    yield float(item)
         
         if benchmark:
             stats, timing_info = ss_helpers.stats_all(corrected, benchmark=True)
