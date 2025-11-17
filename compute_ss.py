@@ -14,6 +14,24 @@ from collections import defaultdict
 from pg_gan import ss_helpers, ss_extra
 from dataset import load_data, metadata_file
 
+def split_matrices(matrices, sample_sizes):
+
+    # set up empty array
+    _all = []
+
+    start_idx = 0
+    for s in sample_sizes:
+        end_idx = start_idx + s
+
+        # parse matrices
+        p = matrices[:,start_idx:end_idx,:,:]
+        _all.append(p)
+
+        # last step: update start_idx
+        start_idx = end_idx
+
+    return _all
+
 def compute_stats_for_dataset(samples, max_samples=None, benchmark=True):
     """
     Compute summary statistics for the entire dataset.
@@ -38,13 +56,32 @@ def compute_stats_for_dataset(samples, max_samples=None, benchmark=True):
     if max_samples is not None:
         samples = samples[:max_samples]
     
-    all_stats = []
-    timing_data = defaultdict(list) if benchmark else None
-    
     print(f"Computing summary statistics for {len(samples)} samples...")
     if benchmark:
         print("Benchmarking enabled - collecting timing data...")
+
+    # split into populations if more than one
+    samples_per_pop = split_matrices(samples, sample_sizes)
     
+    aggregated_stats = []
+    for pop in samples_per_pop:
+        all_stats, timing_data = stats_per_pop(pop)
+        aggregated_stats.append(all_stats)
+
+    # compute Fst
+    real_fst = ss_helpers.fst_all(samples, sample_sizes)
+    print("Fst", real_fst.shape)
+    input("add on fst here!")
+    
+    #if benchmark:
+    #    return np.array(all_stats), timing_data
+    return np.array(aggregated_stats)
+
+def stats_per_pop(samples):
+
+    all_stats = []
+    timing_data = defaultdict(list) if benchmark else None
+
     for i in tqdm(range(0, len(samples))):
         sample = samples[i]
         # convert -1 to 0
@@ -89,10 +126,8 @@ def compute_stats_for_dataset(samples, max_samples=None, benchmark=True):
         # Concatenate all stats
         stats_all = np.concatenate([stats_flat, stats_extra])
         all_stats.append(stats_all)
-    
-    if benchmark:
-        return np.array(all_stats), timing_data
-    return np.array(all_stats)
+
+    return all_stats, timing_data
 
 def analyze_timing_statistics(timing_data):
     """
