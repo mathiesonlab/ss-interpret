@@ -70,9 +70,11 @@ def compute_stats_for_dataset(samples, max_samples=None, benchmark=True):
         all_stats, timing_data = stats_per_pop(pop)
         aggregated_stats.append(all_stats)
 
+    print("without fst", np.array(aggregated_stats).shape)
+
     # compute Fst
     real_fst = ss_helpers.fst_all(samples, sample_sizes)
-    print("Fst", real_fst.shape)
+    print("Fst", real_fst)
     input("add on fst here!")
     
     #if benchmark:
