@@ -87,7 +87,6 @@ def compute_stats_for_dataset(samples, max_samples=None, benchmark=True):
     n_samples = len(samples)
     final_stats = []
     for i in range(n_samples):
-        print(aggregated_stats[0,i,:].shape, aggregated_stats[1,i,:].shape, np.array([fst[i]]).shape)
         final_stats.append(np.concatenate((aggregated_stats[0,i,:], aggregated_stats[1,i,:], np.array([fst[i]]))))
     final_stats = np.array(final_stats)
     print("final stats", final_stats.shape)
@@ -204,6 +203,7 @@ def save_stats_with_metadata(stats, max_samples=None):
     #    metadata = metadata.head(max_samples)
     
     print("Adding statistics to metadata file...")
+    assert stats.shape[1] == len(ss_helpers.ALL_STATS)
     # Add statistics columns to metadata
     metadata = {}
     for i, stat_name in enumerate(ss_helpers.ALL_STATS):
