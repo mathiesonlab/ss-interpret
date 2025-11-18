@@ -454,7 +454,7 @@ def fst_all(matrices, sample_sizes, benchmark=False):
 
 STATS = [f'SFS_{i}' for i in range(0, NUM_SFS)] + \
              [f'inter-SNP_{i}' for i in range(1, global_vars.NUM_SNPS+1)] + \
-             [f'LD_{i}' for i in range(1, NUM_LD+1)] + ['$\pi$', '#haps']
+             [f'LD_{i}' for i in range(1, NUM_LD+1)] + [r'$\pi$', '#haps']
 
 EXTRA_STATS = ['ihs_maxabs', "tajimas_d", 'garud_h1', 'garud_h12', 'garud_h123', 'garud_h2_h1']
 

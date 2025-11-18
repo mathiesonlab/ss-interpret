@@ -120,12 +120,10 @@ def stats_per_pop(samples, benchmark=True):
             stats = ss_helpers.stats_all(corrected)
         
         stats_flat = list(flatten(stats))
-        print("stats_all", len(stats_flat))
         
         # Compute extra summary stats
         if benchmark:
             stats_extra, extra_timing = ss_extra.compute_extra_stats(sample, benchmark=True)
-            print("stats extra", len(stats_extra))
             # Store extra timing information
             for stat_name, timing_value in extra_timing.items():
                 timing_data[stat_name].append(timing_value)
