@@ -73,20 +73,15 @@ def compute_stats_for_dataset(samples, max_samples=None, benchmark=True):
     sample_sizes = [POP1_n, POP2_n]
     samples_per_pop = split_matrices(samples, sample_sizes)
     
+    # list of stats per pop
     aggregated_stats = []
     for pop in samples_per_pop:
         all_stats, timing_data = stats_per_pop(pop)
         aggregated_stats.append(all_stats)
-
-    print("without fst", np.array(aggregated_stats).shape)
+    aggregated_stats = np.array(aggregated_stats)
 
     # compute Fst
-    fst, timing = ss_helpers.fst_all(samples, sample_sizes, benchmark=True) # TODO stopped here!
-    print("Fst", fst)
-    input("add on fst here!")
-    
-    #if benchmark:
-    #    return np.array(all_stats), timing_data
+    fst, timing = ss_helpers.fst_all(samples, sample_sizes, benchmark=True)
 
     # reshape into n_samples x n_stats
     n_samples = len(samples)
