@@ -235,4 +235,4 @@ def main(max_samples=None, benchmark=True):
 if __name__ == "__main__":
     print("\nCompute statistics for the dataset.\n")   
     print("Usage: python compute_ss.py")
-    main(max_samples=10, benchmark=True)
+    main(max_samples=10, benchmark=False)
