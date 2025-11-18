@@ -19,6 +19,7 @@ from . import global_vars
 # GLOBALS
 NUM_SFS = 10
 NUM_LD  = 15
+MAX_DIST = 500 # 500 for mosquito, 20k for human
 
 ################################################################################
 # PARSE PG-GAN OUTPUT
@@ -157,8 +158,7 @@ def compute_ld(vm, L, benchmark=False):
 
     # num bins
     nbin = NUM_LD
-    max_dist = 20000
-    dist_bins = np.linspace(0,max_dist,nbin)
+    dist_bins = np.linspace(0,MAX_DIST,nbin)
     rsquared = [0]*nbin
     counts = [0]*nbin
 
@@ -282,8 +282,7 @@ def plot_generic(ax, name, real, sim, real_color, sim_color, pop="",
     # LD
     elif name == "distance between SNPs":
         nbin = NUM_LD
-        max_dist = 20000
-        dist_bins = np.linspace(0,max_dist,nbin)
+        dist_bins = np.linspace(0,MAX_DIST,nbin)
         real_mean = [np.mean(rs) for rs in real]
         sim_mean = [np.mean(ss) for ss in sim]
         real_stddev = [np.std(rs) for rs in real]
@@ -453,9 +452,9 @@ def fst_all(matrices, sample_sizes, benchmark=False):
     
     return real_fst
 
-STATS = [f'SFS_{i}' for i in range(0, 10)] + \
-             [f'inter-SNP_{i}' for i in range(1, 37)] + \
-             [f'LD_{i}' for i in range(1, 16)] + ['$\pi$', '#haps']
+STATS = [f'SFS_{i}' for i in range(0, NUM_SFS)] + \
+             [f'inter-SNP_{i}' for i in range(1, global_vars.NUM_SNPS+1)] + \
+             [f'LD_{i}' for i in range(1, NUM_LD+1)] + ['$\pi$', '#haps']
 
 EXTRA_STATS = ['ihs_maxabs', "tajimas_d", 'garud_h1', 'garud_h12', 'garud_h123', 'garud_h2_h1']
 
