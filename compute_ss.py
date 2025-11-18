@@ -87,7 +87,7 @@ def compute_stats_for_dataset(samples, max_samples=None, benchmark=True):
     n_samples = len(samples)
     final_stats = []
     for i in range(n_samples):
-        final_stats.append(aggregated_stats[0,i,:] + aggregated_stats[1,i,:] + fst[i])
+        final_stats.append(np.concatenate(aggregated_stats[0,i,:], aggregated_stats[1,i,:], fst[i]))
     final_stats = np.array(final_stats)
     print("final stats", final_stats.shape)
     return final_stats
