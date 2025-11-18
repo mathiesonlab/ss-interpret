@@ -203,6 +203,7 @@ def save_stats_with_metadata(stats, max_samples=None):
     #    metadata = metadata.head(max_samples)
     
     print("Adding statistics to metadata file...")
+    print(stats.shape[1], len(ss_helpers.ALL_STATS))
     assert stats.shape[1] == len(ss_helpers.ALL_STATS)
     # Add statistics columns to metadata
     metadata = {}
