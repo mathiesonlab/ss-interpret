@@ -159,7 +159,7 @@ def metadata_file() -> str:
     """
     Returns the path to the metadata file for the given population.
     """
-    return PREFIX + "metadata.csv"
+    return PREFIX + "computed/stats.csv"
 
 def load_metadata(pop: str) -> pd.DataFrame:
     """
