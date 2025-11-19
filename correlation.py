@@ -343,7 +343,7 @@ def plot_linear_regression_summary(results):
 if __name__ == "__main__":
     # arguments like: pop <exp-random | corr | linreg> [seed | model name]
     parser = argparse.ArgumentParser()
-    parser.add_argument("pop", choices=["CEU", "CHB", "YRI"])
+    #parser.add_argument("pop", choices=["CEU", "CHB", "YRI"])
     parser.add_argument("experiment", choices=["exp-random", "corr", "linreg", "manual"])
     parser.add_argument("detail", nargs="?", default=None, 
                         help="Seed for exp-random or " \

@@ -26,12 +26,12 @@ def main_preds():
     seed = 0
     accs[seed] = {"overall": 0}
     preds, _ = get_model_preds_lf(model_name)
-    print("got preds!", preds.shape, preds[:10])
+    #print("got preds!", preds.shape, preds[:10])
     
     gen_labels = labels
-    print("got labels!", gen_labels.shape, gen_labels[-10:])
+    #print("got labels!", gen_labels.shape, gen_labels[-10:])
     gen_preds = preds > 0.5
-    print("threshold!", gen_preds.shape, gen_preds[:10])
+    #print("threshold!", gen_preds.shape, gen_preds[:10])
 
     # store accuracy
     acc = accuracy_score(gen_labels, gen_preds)
