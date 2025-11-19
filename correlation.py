@@ -171,10 +171,10 @@ def plot_stacked_correlation(pop, model_name, realgen=False):
     return cgs
 
 
-def plot_randomize_labels_experiment(pop: str, seed: int, realgen=False):
-    preds, _ = get_model_preds_lf(pop, f"disc_{seed}")
+def plot_randomize_labels_experiment(seed: int, realgen=False):
+    preds, _ = get_model_preds_lf(f"disc_{seed}")
     # preds2, _ = get_model_preds_lf(pop, f"random-labels_{seed}")
-    preds3, _ = get_model_preds_lf(pop, f"random-weights_{seed}")
+    preds3, _ = get_model_preds_lf(f"random-weights_{seed}")
     _, mask, valid_mask = get_stats(pop)
     preds = preds[valid_mask]
     # preds2 = preds2[valid_mask]
