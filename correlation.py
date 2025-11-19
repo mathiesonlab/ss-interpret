@@ -49,6 +49,9 @@ def histograms_separate(preds: list[np.ndarray],
 
 
 def get_correl(weights, stats, fillna=False):
+    print("learned features shape", weights.shape)
+    print("stats shape", stats.shape)
+    input('enter')
     corrs = np.zeros((weights.shape[1], stats.shape[1]))
     for i in range(weights.shape[1]):
         for j in range(stats.shape[1]):
