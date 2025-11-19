@@ -10,9 +10,9 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error
 
-from utils import SELECTED_STATS, apply_seed_to_path, colorlabels, get_model_preds_lf, get_stats, iterate_seeds
+from utils import SELECTED_STATS, apply_seed_to_path, colorlabels, get_model_preds_lf, get_stats, iterate_seeds, PREFIX
 
-def histograms_separate(preds: list[np.ndarray], mask, 
+def histograms_separate(preds: list[np.ndarray], 
                         name="", predsnames: list[str] = []):
     reals, simus = [], []
     for pred in preds:
@@ -120,25 +120,25 @@ def correlationheatmap(clustermap: sns.matrix.ClusterGrid, ax, yticks_on=False, 
         label.set_fontsize(6)
     colorlabels(ax.get_yticklabels(), pad=0)
 
-def plot_stacked_correlation(pop, model_name, realgen=False):
+def plot_stacked_correlation(model_name, realgen=False):
     """
     Plots correlations for a given model. Can separate real/generated
     correlations if realgen=True.
     """
     _, weights = get_model_preds_lf(pop, model_name)
-    stats, real_mask, valid_mask  = get_stats(pop)
+    stats  = get_stats()
 
     # do we keep interSNP?
     # idxs = [.index(stat) for stat in SELECTED_STATS if stat.startswith("inter-SNP")]
     # stats = np.delete(stats, idxs, axis=1)
 
     # combined clustermap
-    w = weights[valid_mask]
+    w = weights
     corrs, mask = get_correl(w, stats, fillna=True)
     cg_combined = correlationclustermap(corrs, mask, cluster_cols=True)
     col_orders = cg_combined.dendrogram_col.reordered_ind
     colorlabels(cg_combined.ax_heatmap.get_yticklabels())
-    plt.savefig(f"./figs/correl_{model_name}_combined.pdf", dpi=300, bbox_inches="tight")
+    plt.savefig(PREFIX + f"figs/correl_{model_name}_combined.pdf", dpi=300, bbox_inches="tight")
     plt.close()
 
     cgs = [cg_combined]
@@ -175,20 +175,20 @@ def plot_randomize_labels_experiment(seed: int, realgen=False):
     preds, _ = get_model_preds_lf(f"disc_{seed}")
     # preds2, _ = get_model_preds_lf(pop, f"random-labels_{seed}")
     preds3, _ = get_model_preds_lf(f"random-weights_{seed}")
-    _, mask, valid_mask = get_stats()
-    preds = preds[valid_mask]
+    stats = get_stats()
+    #preds = preds[valid_mask]
     # preds2 = preds2[valid_mask]
-    preds3 = preds3[valid_mask]
+    #preds3 = preds3[valid_mask]
 
     # histogram
-    histograms_separate([preds, preds3], mask,
-                        name=f"exp_data_randomization_{seed}", 
-                        predsnames=["Normal", "Random Weights"])
+    #histograms_separate([preds, preds3],
+    #                    name=f"exp_data_randomization_{seed}", 
+    #                    predsnames=["Normal", "Random Weights"])
 
     # correlation
-    cgs = plot_stacked_correlation(pop, f"disc_{seed}", realgen)
+    cgs = plot_stacked_correlation(f"disc_{seed}", realgen)
     # cgs += plot_stacked_correlation(pop, f"random-labels_{seed}", realgen)
-    cgs += plot_stacked_correlation(pop, f"random-weights_{seed}", realgen)
+    cgs += plot_stacked_correlation(f"random-weights_{seed}", realgen)
 
     if len(cgs) == 2:
         # aka, just 1 row of 2 correlation maps
