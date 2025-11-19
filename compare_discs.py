@@ -18,24 +18,20 @@ import matplotlib.pyplot as plt
 model_name = "disc_0"
 
 def main_preds():
-    #for pop in pops:
-    #print(f"Computing for {pop}")
     # load data
     _, labels = load_data()
-    #metadata = load_metadata()
 
     # compute accuracy for each disc on each generator
-    #metadata["source"] = metadata["source"].apply(lambda x: str(x).rsplit("_", maxsplit=1)[0])
     accs = {}
-    #for model_str, fc_size in zip(model_strs, fc_sizes):
     seed = 0
     accs[seed] = {"overall": 0}
-    #model_path = os.path.basename(apply_seed_to_path(model_str, seed).split(".")[0])
     preds, _ = get_model_preds_lf(model_name)
-    print("got preds!", preds.shape)
-    #for generator in metadata["source"].unique():
-    gen_labels = labels[metadata["source"] == generator]
-    gen_preds = preds[metadata["source"] == generator] > 0.5
+    print("got preds!", preds.shape, preds[:10])
+    
+    gen_labels = labels
+    print("got labels!", gen_labels.shape, gen_labels[:10])
+    gen_preds = preds > 0.5
+    print("threshold!", gen_preds.shape, gen_preds[:10])
 
     # store accuracy
     acc = accuracy_score(gen_labels, gen_preds)
