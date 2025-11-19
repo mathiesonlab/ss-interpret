@@ -106,9 +106,9 @@ def save_preds_lf(model_str, preds, lf):
     np.savez_compressed(preds_lf_path(model_str), preds=preds, lf=lf)
 
 
-def get_model_preds_lf(pop, model_name):
+def get_model_preds_lf(model_name):
     """Returns a tuple (preds, learned features)"""
-    a = np.load(preds_lf_path(pop, model_name))
+    a = np.load(preds_lf_path(model_name))
     preds = a['preds']
     lf = a['lf']
 
