@@ -161,12 +161,12 @@ def metadata_file() -> str:
     """
     return PREFIX + "computed/stats.csv"
 
-def load_metadata(pop: str) -> pd.DataFrame:
+def load_metadata() -> pd.DataFrame:
     """
     Load the metadata from the csv file.
     Returns a DataFrame with the metadata.
     """
-    file = metadata_file(pop)
+    file = metadata_file()
     if not os.path.exists(file):
         raise FileNotFoundError(f"Metadata file {file} does not exist.")
 

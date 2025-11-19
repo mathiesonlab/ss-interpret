@@ -114,7 +114,7 @@ def get_model_preds_lf(model_name):
 
     return preds, lf
 
-def get_stats(pop, filter=True):
+def get_stats(filter=True):
     """
     Return a tuple (stats, real_mask, valid_mask) if filtering nan ihs, or
     a tuple (stats, real_mask) if not. 
@@ -122,7 +122,7 @@ def get_stats(pop, filter=True):
     Real_mask is a boolean mask for stats where the label is "real".
     """
     from dataset import load_metadata
-    stats = load_metadata(pop)
+    stats = load_metadata()
     stats = stats[["source", "label"] + SELECTED_STATS]
 
     if filter:
