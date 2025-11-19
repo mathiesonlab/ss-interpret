@@ -123,7 +123,7 @@ def get_stats(filter=True):
     """
     from dataset import load_metadata
     stats = load_metadata()
-    stats = stats[SELECTED_STATS]
+    stats = stats[SELECTED_STATS].values
     return stats
 
     '''if filter:
