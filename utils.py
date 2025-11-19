@@ -123,16 +123,17 @@ def get_stats(filter=True):
     """
     from dataset import load_metadata
     stats = load_metadata()
-    stats = stats[["source", "label"] + SELECTED_STATS]
+    stats = stats[SELECTED_STATS]
+    return stats
 
-    if filter:
+    '''if filter:
         # drop weights/stats samples where stats["ihs_maxabs"] is nan
         valid_mask = ~np.isnan(stats["ihs_maxabs"])
         real_mask = (stats['label'] == 1).values
         return stats[SELECTED_STATS].values[valid_mask], real_mask[valid_mask], valid_mask
     else:
         real_mask = (stats['label'] == 1).values
-        return stats[SELECTED_STATS].values, real_mask
+        return stats[SELECTED_STATS].values, real_mask'''
 
 
 def colorlabels(lbls, pad=0.3):
