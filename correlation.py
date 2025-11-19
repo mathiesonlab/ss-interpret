@@ -351,9 +351,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.experiment == "exp-random":
-        plot_randomize_labels_experiment(args.pop, args.detail, False)
+        plot_randomize_labels_experiment(args.detail, False)
     elif args.experiment == "corr":
-        plot_stacked_correlation(args.pop, args.detail)
+        plot_stacked_correlation(args.detail)
     elif args.experiment == "linreg":
         results = linear_regression_analysis(args.pop)
         results.to_csv("./figdata/linear_regression_analysis.csv", index=False)
