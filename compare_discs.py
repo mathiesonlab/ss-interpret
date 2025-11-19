@@ -35,22 +35,23 @@ def main_preds():
 
     # store accuracy
     acc = accuracy_score(gen_labels, gen_preds)
-    accs[seed][generator.split("_")[1]] = acc
+    #accs[seed][generator.split("_")[1]] = acc
+    print("acc", acc)
 
     accs[seed]["overall"] += acc * (gen_preds.shape[0] / preds.shape[0])
 
     # metadata
-    model_prefix = model_str.split("N")[0].rsplit("/")[0].replace("-", "").replace("_", "")
+    #model_prefix = model_str.split("N")[0].rsplit("/")[0].replace("-", "").replace("_", "")
 
     # save
     accs_df = pd.DataFrame(accs).T  # rows=seeds, cols=generators
-    accs_df.to_csv(PREFIX + f"figs/discriminator_accuracy_{model_prefix}.csv")
+    accs_df.to_csv(PREFIX + f"figs/discriminator_accuracy_{model_name}.csv")
 
 def main_viz():
     
     fig, axs = plt.subplots(2, 1, figsize=(8, 12))
-    model_prefix = model_str.split("N")[0].rsplit("/")[0].replace("-", "").replace("_", "")
-    accs_df = pd.read_csv(PREFIX + f"figs/discriminator_accuracy_{model_prefix}.csv", index_col=0)
+    #model_prefix = model_str.split("N")[0].rsplit("/")[0].replace("-", "").replace("_", "")
+    accs_df = pd.read_csv(PREFIX + f"figs/discriminator_accuracy_{model_name}.csv", index_col=0)
     model_prefix = "GAN" if model_prefix == "models" else "New"
 
     # print overall accuracy for each seed
