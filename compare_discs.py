@@ -15,7 +15,7 @@ from sklearn.metrics import classification_report, accuracy_score
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-model_name = "discs/disc_0.keras"
+model_name = "disc_0"
 
 def main_preds():
     #for pop in pops:
