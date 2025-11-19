@@ -31,7 +31,7 @@ def main_preds():
     seed = 0
     accs[seed] = {"overall": 0}
     #model_path = os.path.basename(apply_seed_to_path(model_str, seed).split(".")[0])
-    preds, _ = get_model_preds_lf(model_path)
+    preds, _ = get_model_preds_lf(model_name)
     print("got preds!", preds.shape)
     #for generator in metadata["source"].unique():
     gen_labels = labels[metadata["source"] == generator]
