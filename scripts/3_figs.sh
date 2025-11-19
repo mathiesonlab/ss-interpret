@@ -5,7 +5,7 @@ python compare_discs.py pred
 #python compare_discs.py fig
 
 # combined correlation experiment plot (only CEU)
-python correlation.py exp-random
+python correlation.py exp-random 0
 
 # linear regression experiment (only CEU)
 #python correlation.py CEU linreg

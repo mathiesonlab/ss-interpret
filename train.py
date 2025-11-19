@@ -53,6 +53,8 @@ def train_discriminator(fc_size, samples, labels, num_epochs=10, batch_size=64, 
     """Train a discriminator with specified fc_size."""
     name = "disc" if name is None else name
     model_path = PREFIX + f"discs/{name}_{seed}.keras"
+    if randomize_weights:
+        model_path = PREFIX + f"discs/random-weights_{seed}.keras"
     
     # Set random seeds
     np.random.seed(seed)
