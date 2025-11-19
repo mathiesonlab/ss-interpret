@@ -125,7 +125,7 @@ def plot_stacked_correlation(model_name, realgen=False):
     Plots correlations for a given model. Can separate real/generated
     correlations if realgen=True.
     """
-    _, weights = get_model_preds_lf(pop, model_name)
+    _, weights = get_model_preds_lf(model_name)
     stats  = get_stats()
 
     # do we keep interSNP?
