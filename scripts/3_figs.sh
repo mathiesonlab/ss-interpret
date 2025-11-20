@@ -1,14 +1,14 @@
 #set -euo pipefail
 
-# make accuracy heatmaps (for all pops)
+# make accuracy heatmaps
 python compare_discs.py pred
 #python compare_discs.py fig
 
-# combined correlation experiment plot (only CEU)
+# combined correlation experiment plot
 python correlation.py exp-random 0
 
-# linear regression experiment (only CEU)
-#python correlation.py CEU linreg
+# linear regression experiment
+python correlation.py linreg
 
 # single correlation
 #python correlation.py $pop corr disc_0

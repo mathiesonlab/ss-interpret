@@ -216,25 +216,25 @@ def plot_randomize_labels_experiment(seed: int, realgen=False):
     plt.close()
 
 
-def linear_regression_analysis(pop, test_size=0.2, random_state=42):
+def linear_regression_analysis(test_size=0.2, random_state=42):
     """
     Performs linear regression on activations/weights to predict summary statistics.
     Compares R² and RMSE across different models.
     """
-    model_names = [f"{str}_{i}" for str in ["disc", "random-weights"] for i in range(5)]
+    model_names = ["disc", "random-weights"]
     results = []
     
-    stats, _, valid_mask = get_stats(pop)
+    stats = get_stats()
 
     for model_name in model_names:
         print(f"Processing model: {model_name}")
         
         # Load data
-        _, weights = get_model_preds_lf(pop, model_name)
+        _, weights = get_model_preds_lf(model_name)
         w, s = weights, stats
 
         # Apply valid mask to weights and stats
-        w = w[valid_mask]
+        #w = w[valid_mask]
         print(f"Dropped {weights.shape[0] - w.shape[0]} samples due to nan ihsmaxabs")
 
         # For each summary statistic
@@ -355,10 +355,10 @@ if __name__ == "__main__":
     elif args.experiment == "corr":
         plot_stacked_correlation(args.detail)
     elif args.experiment == "linreg":
-        results = linear_regression_analysis(args.pop)
-        results.to_csv("./figdata/linear_regression_analysis.csv", index=False)
+        results = linear_regression_analysis()
+        #results.to_csv("./figdata/linear_regression_analysis.csv", index=False)
         
-        results = pd.read_csv("./figdata/linear_regression_analysis.csv")
+        #results = pd.read_csv("./figdata/linear_regression_analysis.csv")
         # results = results[results["model"] != "random_labels-0"]
 
         plot_linear_regression_summary(results)
