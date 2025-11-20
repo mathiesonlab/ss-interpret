@@ -212,7 +212,7 @@ def plot_randomize_labels_experiment(seed: int, realgen=False):
                 if i == 2:
                     axs[i, j].set_xlabel("Learned Features")
 
-    plt.savefig(f"./figs/correl_exp_random_{seed}.pdf", dpi=300, bbox_inches="tight")
+    plt.savefig(PREFIX + f"figs/correl_exp_random_{seed}.pdf", dpi=300, bbox_inches="tight")
     plt.close()
 
 
@@ -221,7 +221,7 @@ def linear_regression_analysis(test_size=0.2, random_state=42):
     Performs linear regression on activations/weights to predict summary statistics.
     Compares R² and RMSE across different models.
     """
-    model_names = ["disc", "random-weights"]
+    model_names = ["disc_0", "random-weights_0"]
     results = []
     
     stats = get_stats()
