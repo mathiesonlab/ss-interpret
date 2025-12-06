@@ -303,7 +303,7 @@ def plot_dists_combined(pop):
 
 def plot_linear_regression_summary(results):
     # Select statistics to plot
-    selected_stats = ALL_STATS
+    selected_stats = ALL_STATS[:9] + ALL_STATS[9+72:9+72+20] + ALL_STATS[-20:]
     #[ # "ones", 
     #    r"$\pi$", "#haps", "ihs_maxabs", "garud_h1", "garud_h12", "garud_h123", "garud_h2_h1",
     #    "SFS_1", "SFS_2", "SFS_3", "SFS_4"
