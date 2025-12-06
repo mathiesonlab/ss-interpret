@@ -356,10 +356,10 @@ if __name__ == "__main__":
         plot_stacked_correlation(args.detail)
     elif args.experiment == "linreg":
         results = linear_regression_analysis()
-        #results.to_csv("./figdata/linear_regression_analysis.csv", index=False)
+        results.to_csv(PREFIX + "figs/linear_regression_analysis.csv", index=False)
         
-        #results = pd.read_csv("./figdata/linear_regression_analysis.csv")
-        # results = results[results["model"] != "random_labels-0"]
+        results = pd.read_csv(PREFIX + "figdata/linear_regression_analysis.csv")
+        results = results[results["model"] != "random_labels-0"]
 
         plot_linear_regression_summary(results)
     else:
