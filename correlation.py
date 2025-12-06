@@ -10,6 +10,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error
 
+from pg_gan.ss_helpers import ALL_STATS
 from utils import SELECTED_STATS, apply_seed_to_path, colorlabels, get_model_preds_lf, get_stats, iterate_seeds, PREFIX
 
 def histograms_separate(preds: list[np.ndarray], 
@@ -302,10 +303,11 @@ def plot_dists_combined(pop):
 
 def plot_linear_regression_summary(results):
     # Select statistics to plot
-    selected_stats = [ # "ones", 
-        r"$\pi$", "#haps", "ihs_maxabs", "garud_h1", "garud_h12", "garud_h123", "garud_h2_h1",
-        "SFS_1", "SFS_2", "SFS_3", "SFS_4"
-    ] + [f"LD_{i}" for i in range(1, 15)]
+    selected_stats = ALL_STATS
+    #[ # "ones", 
+    #    r"$\pi$", "#haps", "ihs_maxabs", "garud_h1", "garud_h12", "garud_h123", "garud_h2_h1",
+    #    "SFS_1", "SFS_2", "SFS_3", "SFS_4"
+    #] + [f"LD_{i}" for i in range(1, 15)]
 
     # Filter data
     plot_data = results[results['statistic'].isin(selected_stats)]
