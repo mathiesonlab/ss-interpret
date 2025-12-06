@@ -337,7 +337,7 @@ def plot_linear_regression_summary(results):
     ax.grid(axis='y', linestyle='--', alpha=0.7)
     ax.set_ylim(bottom=0)
     plt.tight_layout()
-    plt.savefig("./figs/linreg_summary.pdf", dpi=300, bbox_inches="tight")
+    plt.savefig(PREFIX + "figs/linreg_summary.pdf", dpi=300, bbox_inches="tight")
     plt.close()
 
 if __name__ == "__main__":
