@@ -358,7 +358,7 @@ if __name__ == "__main__":
         results = linear_regression_analysis()
         results.to_csv(PREFIX + "figs/linear_regression_analysis.csv", index=False)
         
-        results = pd.read_csv(PREFIX + "figdata/linear_regression_analysis.csv")
+        results = pd.read_csv(PREFIX + "figs/linear_regression_analysis.csv")
         results = results[results["model"] != "random_labels-0"]
 
         plot_linear_regression_summary(results)
