@@ -304,6 +304,8 @@ def plot_dists_combined(pop):
 def plot_linear_regression_summary(results):
     # Select statistics to plot
     selected_stats = ALL_STATS[:3] + ALL_STATS[10+72:10+72+23+3] + ALL_STATS[-24:-1]
+    selected_stats.remove("ihs_maxabs_GN")
+    selected_stats.remove("ihs_maxabs_BF")
     #[ # "ones", 
     #    r"$\pi$", "#haps", "ihs_maxabs", "garud_h1", "garud_h12", "garud_h123", "garud_h2_h1",
     #    "SFS_1", "SFS_2", "SFS_3", "SFS_4"
